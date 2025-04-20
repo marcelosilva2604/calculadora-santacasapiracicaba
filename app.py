@@ -19,7 +19,7 @@ def calculate():
     
     # Obter peso do paciente e período (12h ou 24h)
     patient_weight = float(patient_info.get('weight', 0))
-    timeframe = int(data.get('timeframe', 12))
+    timeframe = int(data.get('timeframe', 24))
     
     # Verificar se o peso é válido
     if patient_weight <= 0:
