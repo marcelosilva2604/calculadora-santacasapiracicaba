@@ -37,12 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 weight: parseFloat(document.getElementById('patientWeight').value) || 0
             },
             measurements: {
-                temperature: document.getElementById('temperature').value,
-                incubatorTemp: document.getElementById('incubatorTemp').value,
                 heartRate: document.getElementById('heartRate').value,
                 respiratoryRate: document.getElementById('respiratoryRate').value,
-                meanArterialPressure: document.getElementById('meanArterialPressure').value,
                 oxygenSaturation: document.getElementById('oxygenSaturation').value,
+                temperature: document.getElementById('temperature').value,
+                meanArterialPressure: document.getElementById('meanArterialPressure').value,
                 capillaryGlycemia: document.getElementById('capillaryGlycemia').value
             },
             inputs: {
@@ -86,13 +85,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Preencher as medições
             if (data.measurements) {
-                document.getElementById('temperatureResult').textContent = 'Temperatura: ' + (data.measurements.temperature || 'N/A');
-                document.getElementById('incubatorTempResult').textContent = 'Temperatura da incubadora: ' + (data.measurements.incubatorTemp || 'N/A');
-                document.getElementById('heartRateResult').textContent = 'Frequência cardíaca: ' + (data.measurements.heartRate || 'N/A');
-                document.getElementById('respiratoryRateResult').textContent = 'Frequência respiratória: ' + (data.measurements.respiratoryRate || 'N/A');
-                document.getElementById('meanArterialPressureResult').textContent = 'Pressão arterial média: ' + (data.measurements.meanArterialPressure || 'N/A');
-                document.getElementById('oxygenSaturationResult').textContent = 'Saturação de Oxigênio: ' + (data.measurements.oxygenSaturation || 'N/A');
-                document.getElementById('capillaryGlycemiaResult').textContent = 'Glicemia Capilar: ' + (data.measurements.capillaryGlycemia || 'N/A');
+                document.getElementById('heartRateResult').textContent = `Frequência cardíaca: ${data.measurements.heartRate || 'N/A'} bpm`;
+                document.getElementById('respiratoryRateResult').textContent = `Frequência respiratória: ${data.measurements.respiratoryRate || 'N/A'} irpm`;
+                document.getElementById('oxygenSaturationResult').textContent = `Saturação de Oxigênio: ${data.measurements.oxygenSaturation || 'N/A'} %`;
+                document.getElementById('temperatureResult').textContent = `Temperatura: ${data.measurements.temperature || 'N/A'} °C`;
+                document.getElementById('meanArterialPressureResult').textContent = `Pressão arterial média: ${data.measurements.meanArterialPressure || 'N/A'} mmHg`;
+                document.getElementById('capillaryGlycemiaResult').textContent = `Glicemia Capilar: ${data.measurements.capillaryGlycemia || 'N/A'} mg/dL`;
             }
             
             // Preencher as entradas
@@ -180,11 +178,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Resetar medições
         document.getElementById('temperature').value = '';
-        document.getElementById('incubatorTemp').value = '';
         document.getElementById('heartRate').value = '';
         document.getElementById('respiratoryRate').value = '';
-        document.getElementById('meanArterialPressure').value = '';
         document.getElementById('oxygenSaturation').value = '';
+        document.getElementById('meanArterialPressure').value = '';
         document.getElementById('capillaryGlycemia').value = '';
         
         // Limpar listas e totais
@@ -222,12 +219,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const weight = document.getElementById('patientWeightResult').textContent;
         
         // Medições
-        const temperature = document.getElementById('temperatureResult').textContent;
-        const incubatorTemp = document.getElementById('incubatorTempResult').textContent;
         const heartRate = document.getElementById('heartRateResult').textContent;
         const respiratoryRate = document.getElementById('respiratoryRateResult').textContent;
-        const meanArterialPressure = document.getElementById('meanArterialPressureResult').textContent;
         const oxygenSaturation = document.getElementById('oxygenSaturationResult').textContent;
+        const temperature = document.getElementById('temperatureResult').textContent;
+        const meanArterialPressure = document.getElementById('meanArterialPressureResult').textContent;
         const capillaryGlycemia = document.getElementById('capillaryGlycemiaResult').textContent;
         
         // Entradas
@@ -257,31 +253,30 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Montar o texto formatado para cópia
         let report = `${name}\n`;
-        report += `Leito - ${bed} / Peso - ${weight} kg\n\n`;
+        report += `Leito: ${bed} / Peso: ${weight} kg\n\n`;
         
         report += `Medições:\n`;
-        report += `${temperature}\n`;
-        report += `${incubatorTemp}\n`;
         report += `${heartRate}\n`;
         report += `${respiratoryRate}\n`;
-        report += `${meanArterialPressure}\n`;
         report += `${oxygenSaturation}\n`;
+        report += `${temperature}\n`;
+        report += `${meanArterialPressure}\n`;
         report += `${capillaryGlycemia}\n\n`;
         
         report += `Entradas:\n`;
-        report += `Dieta - ${diet} ml - ${dietPerKg} ml/kg\n`;
-        report += `Soro - ${serum} ml - ${serumPerKg} ml/kg\n`;
-        report += `Medicação - ${medication} ml - ${medicationPerKg} ml/kg\n`;
-        report += `Oferta hídrica - ${totalInput} ml - ${liquidIntake} ml/kg\n\n`;
+        report += `Dieta = ${diet} ml / ${dietPerKg} ml/kg\n`;
+        report += `Soro = ${serum} ml / ${serumPerKg} ml/kg\n`;
+        report += `Medicação = ${medication} ml / ${medicationPerKg} ml/kg\n`;
+        report += `Oferta hídrica = ${totalInput} ml / ${liquidIntake} ml/kg\n\n`;
         
         report += `Saídas:\n`;
-        report += `Diurese - ${diuresis} ml - ${diuresisPerKgHour} ml/kg/h\n`;
-        report += `Resíduo Gástrico - ${gastricResidue} ml - ${gastricResiduePerKg} ml/kg\n`;
-        report += `Êmese - ${emesisCount} vezes\n`;
-        report += `Evacuação - ${evacuationsCount} vezes\n`;
-        report += `Débito Hídrico - ${totalOutput} ml - ${outputPerKg} ml/kg\n\n`;
+        report += `Diurese = ${diuresis} ml / ${diuresisPerKgHour} ml/kg/h\n`;
+        report += `Resíduo Gástrico = ${gastricResidue} ml / ${gastricResiduePerKg} ml/kg\n`;
+        report += `Êmese = ${emesisCount} vezes\n`;
+        report += `Evacuação = ${evacuationsCount} vezes\n`;
+        report += `Débito Hídrico = ${totalOutput} ml / ${outputPerKg} ml/kg\n\n`;
         
-        report += `Balanço Hídrico ${balance} ml - ${balancePerKg} ml/kg\n`;
+        report += `Balanço Hídrico = ${balance} ml / ${balancePerKg} ml/kg\n`;
         report += `Período: ${timeframe} horas\n`;
         
         return report;
