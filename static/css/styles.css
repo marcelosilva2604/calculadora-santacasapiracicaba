@@ -1,0 +1,99 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 900px;
+}
+
+.card {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.card-header {
+    background-color: #0275d8;
+    color: white;
+}
+
+.form-control:focus {
+    border-color: #0275d8;
+    box-shadow: 0 0 0 0.25rem rgba(2, 117, 216, 0.25);
+}
+
+.btn-primary {
+    background-color: #0275d8;
+    border-color: #0275d8;
+}
+
+.btn-primary:hover {
+    background-color: #0262b7;
+    border-color: #0262b7;
+}
+
+.nav-tabs .nav-link.active {
+    color: #0275d8;
+    font-weight: bold;
+}
+
+#resultArea {
+    transition: all 0.3s ease;
+}
+
+label {
+    font-weight: 500;
+}
+
+.tab-content {
+    padding: 20px;
+    background-color: #fff;
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+/* Estilos para os campos de cálculo */
+.list-group-item {
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-group-item button {
+    font-size: 0.8rem;
+    padding: 0.1rem 0.4rem;
+    margin-left: 0.5rem;
+}
+
+.input-group .btn {
+    z-index: 0; /* Corrige problema de z-index com botões dentro de input-group */
+}
+
+/* Estilos para os campos de valores */
+.card-body {
+    padding: 0.75rem;
+}
+
+.card-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Estilos responsivos */
+@media (max-width: 576px) {
+    .container {
+        padding: 0.5rem;
+    }
+    
+    .card-body {
+        padding: 0.5rem;
+    }
+    
+    .mb-3 {
+        margin-bottom: 0.75rem !important;
+    }
+} 
