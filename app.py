@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+import re
 
 app = Flask(__name__)
 
@@ -75,6 +76,23 @@ def calculate():
     else:
         status = "neutro"
     
+    # Dados do paciente e medições
+    patient_name = patient_info.get('name', '')
+    
+    # Formatação do nome do paciente
+    if patient_name:
+        # Converter para title case (primeira letra de cada palavra maiúscula)
+        formatted_name = patient_name.title()
+        
+        # Usar regex para substituir qualquer variação de "rn" (como Rn, rn) por "RN"
+        # Isso vai pegar tanto no início da string quanto em qualquer lugar
+        formatted_name = re.sub(r'\bRn\b', 'RN', formatted_name, flags=re.IGNORECASE)
+        
+        # Ajustar preposições para minúsculas após RN
+        formatted_name = re.sub(r'RN (De|Do|Da|Dos|Das)\b', lambda m: f'RN {m.group(1).lower()}', formatted_name)
+    else:
+        formatted_name = ''
+    
     # Criando o resultado detalhado
     result = {
         # Entradas
@@ -104,7 +122,7 @@ def calculate():
         
         # Dados do paciente e medições
         "patient": {
-            "name": patient_info.get('name', ''),
+            "name": formatted_name,
             "bed": patient_info.get('bed', ''),
             "weight": patient_weight,
             "timeframe": timeframe

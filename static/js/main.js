@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Preencher os dados do paciente
-            document.getElementById('patientNameResult').textContent = formData.patientInfo.name || 'Paciente';
+            document.getElementById('patientNameResult').textContent = data.patient.name || 'Paciente';
             document.getElementById('patientBedResult').textContent = formData.patientInfo.bed || 'N/A';
             document.getElementById('patientWeightResult').textContent = formData.patientInfo.weight;
             
