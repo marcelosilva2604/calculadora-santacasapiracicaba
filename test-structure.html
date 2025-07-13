@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Test - Refactored Code Structure</title>
+    <style>
+        body { font-family: monospace; margin: 20px; background: #1a1a1a; color: #00ff00; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #333; }
+        .pass { color: #00ff00; }
+        .fail { color: #ff0000; }
+        .warning { color: #ffaa00; }
+        .test-result { margin: 5px 0; }
+        #output { background: #000; padding: 10px; height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 QA TESTING - Refactored Code Structure</h1>
+    
+    <div class="test-section">
+        <h2>📋 Test Results</h2>
+        <div id="output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎛️ Manual Test Controls</h2>
+        <button onclick="testDependencyLoading()">Test Dependency Loading</button>
+        <button onclick="testCalculatorModule()">Test Calculator Module</button>
+        <button onclick="testUIManager()">Test UI Manager</button>
+        <button onclick="testFormHandler()">Test Form Handler</button>
+        <button onclick="testEdgeCases()">Test Edge Cases</button>
+        <button onclick="testErrorHandling()">Test Error Handling</button>
+        <button onclick="runFullTestSuite()">🚀 Run Full Test Suite</button>
+    </div>
+
+    <!-- Load modules in dependency order -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/calculator.js"></script>
+    <script src="static/js/ui-manager.js"></script>
+    <script src="static/js/form-handler.js"></script>
+    <script src="static/js/main.js"></script>
+
+    <script>
+        // QA Testing Framework
+        class QATester {
+            constructor() {
+                this.results = [];
+                this.output = document.getElementById('output');
+            }
+
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = `[${timestamp}] ${message}`;
+                console.log(logEntry);
+                
+                const div = document.createElement('div');
+                div.className = `test-result ${type}`;
+                div.textContent = logEntry;
+                this.output.appendChild(div);
+                this.output.scrollTop = this.output.scrollHeight;
+            }
+
+            assert(condition, message) {
+                if (condition) {
+                    this.log(`✅ PASS: ${message}`, 'pass');
+                    this.results.push({ test: message, status: 'PASS' });
+                } else {
+                    this.log(`❌ FAIL: ${message}`, 'fail');
+                    this.results.push({ test: message, status: 'FAIL' });
+                }
+            }
+
+            warn(message) {
+                this.log(`⚠️  WARNING: ${message}`, 'warning');
+                this.results.push({ test: message, status: 'WARNING' });
+            }
+
+            testDependencyLoading() {
+                this.log('🔍 Testing Dependency Loading...', 'info');
+                
+                // Test if all classes are defined
+                this.assert(typeof HydricBalanceCalculator !== 'undefined', 'HydricBalanceCalculator class loaded');
+                this.assert(typeof UIManager !== 'undefined', 'UIManager class loaded');
+                this.assert(typeof FormHandler !== 'undefined', 'FormHandler class loaded');
+                this.assert(typeof HydricBalanceApp !== 'undefined', 'HydricBalanceApp class loaded');
+
+                // Test global objects
+                this.assert(typeof window.HydricBalanceCalculator !== 'undefined', 'Calculator exposed globally');
+                this.assert(typeof window.UIManager !== 'undefined', 'UIManager exposed globally');
+                this.assert(typeof window.FormHandler !== 'undefined', 'FormHandler exposed globally');
+
+                // Test Bootstrap
+                this.assert(typeof bootstrap !== 'undefined', 'Bootstrap loaded');
+            }
+
+            testCalculatorModule() {
+                this.log('🧮 Testing Calculator Module...', 'info');
+
+                // Test valid calculation
+                const testData = {
+                    patientInfo: { weight: 10 },
+                    inputs: { diet: 100, serum: 200, medication: 50 },
+                    outputs: { diuresis: 150, gastricResidue: 30, emesis: 2, evacuations: 1 },
+                    timeframe: 24,
+                    measurements: {}
+                };
+
+                const result = HydricBalanceCalculator.calculate(testData);
+                this.assert(!result.error, 'Basic calculation succeeds');
+                this.assert(result.total_input === 350, 'Input calculation correct (350ml)');
+                this.assert(result.total_output === 180, 'Output calculation correct (180ml)');
+                this.assert(result.balance === 170, 'Balance calculation correct (+170ml)');
+                this.assert(result.status === 'positivo', 'Status calculation correct (positivo)');
+
+                // Test patient name formatting
+                const nameTest = { patientInfo: { weight: 10, name: 'rn de silva' } };
+                const nameResult = HydricBalanceCalculator.calculate(nameTest);
+                this.assert(nameResult.patient.name === 'RN de Silva', 'Patient name formatting works');
+            }
+
+            testUIManager() {
+                this.log('🎨 Testing UI Manager...', 'info');
+
+                try {
+                    const uiManager = new UIManager();
+                    this.assert(uiManager.elements !== null, 'UIManager initializes');
+                    this.assert(typeof uiManager.displayResults === 'function', 'displayResults method exists');
+                    this.assert(typeof uiManager.clearForm === 'function', 'clearForm method exists');
+                    this.assert(typeof uiManager.copyReport === 'function', 'copyReport method exists');
+                } catch (error) {
+                    this.assert(false, `UIManager initialization: ${error.message}`);
+                }
+            }
+
+            testFormHandler() {
+                this.log('📝 Testing Form Handler...', 'info');
+
+                try {
+                    const formHandler = new FormHandler();
+                    this.assert(formHandler.calculationFields instanceof Map, 'CalculationFields Map initialized');
+                    this.assert(typeof formHandler.collectFormData === 'function', 'collectFormData method exists');
+                    this.assert(typeof formHandler.validateForm === 'function', 'validateForm method exists');
+
+                    // Test validation
+                    const invalidData = { patientInfo: { weight: 0 }, inputs: {} };
+                    const validation = formHandler.validateForm(invalidData);
+                    this.assert(!validation.isValid, 'Validation catches invalid weight');
+                } catch (error) {
+                    this.assert(false, `FormHandler initialization: ${error.message}`);
+                }
+            }
+
+            testEdgeCases() {
+                this.log('🔬 Testing Edge Cases...', 'info');
+
+                // Zero weight
+                const zeroWeight = {
+                    patientInfo: { weight: 0 },
+                    inputs: { diet: 100 },
+                    outputs: {},
+                    timeframe: 24
+                };
+                const zeroResult = HydricBalanceCalculator.calculate(zeroWeight);
+                this.assert(zeroResult.error, 'Rejects zero weight');
+
+                // Negative values
+                const negativeData = {
+                    patientInfo: { weight: 10 },
+                    inputs: { diet: -100 },
+                    outputs: {},
+                    timeframe: 24
+                };
+                const negResult = HydricBalanceCalculator.calculate(negativeData);
+                this.assert(!negResult.error, 'Handles negative inputs gracefully');
+
+                // Very large numbers
+                const largeData = {
+                    patientInfo: { weight: 100 },
+                    inputs: { diet: 999999 },
+                    outputs: {},
+                    timeframe: 24
+                };
+                const largeResult = HydricBalanceCalculator.calculate(largeData);
+                this.assert(!largeResult.error, 'Handles large numbers');
+            }
+
+            testErrorHandling() {
+                this.log('🚨 Testing Error Handling...', 'info');
+
+                // Missing data
+                try {
+                    const result = HydricBalanceCalculator.calculate({});
+                    this.assert(result.error, 'Handles missing data gracefully');
+                } catch (error) {
+                    this.assert(false, 'Should not throw exception on missing data');
+                }
+
+                // Invalid data types
+                try {
+                    const result = HydricBalanceCalculator.calculate({
+                        patientInfo: { weight: "invalid" },
+                        inputs: {},
+                        outputs: {}
+                    });
+                    this.assert(result.error, 'Handles invalid data types');
+                } catch (error) {
+                    this.assert(false, 'Should not throw exception on invalid types');
+                }
+            }
+
+            generateReport() {
+                const passed = this.results.filter(r => r.status === 'PASS').length;
+                const failed = this.results.filter(r => r.status === 'FAIL').length;
+                const warnings = this.results.filter(r => r.status === 'WARNING').length;
+                const total = this.results.length;
+
+                this.log(`\n📊 TEST SUMMARY:`, 'info');
+                this.log(`✅ Passed: ${passed}/${total}`, 'pass');
+                this.log(`❌ Failed: ${failed}/${total}`, failed > 0 ? 'fail' : 'pass');
+                this.log(`⚠️  Warnings: ${warnings}/${total}`, warnings > 0 ? 'warning' : 'pass');
+
+                const successRate = (passed / total * 100).toFixed(1);
+                this.log(`📈 Success Rate: ${successRate}%`, successRate > 90 ? 'pass' : 'fail');
+
+                if (failed === 0) {
+                    this.log(`🎉 ALL TESTS PASSED! Code quality verified.`, 'pass');
+                } else {
+                    this.log(`🚨 ${failed} TESTS FAILED! Review required.`, 'fail');
+                }
+            }
+        }
+
+        const tester = new QATester();
+
+        // Test functions
+        function testDependencyLoading() { tester.testDependencyLoading(); }
+        function testCalculatorModule() { tester.testCalculatorModule(); }
+        function testUIManager() { tester.testUIManager(); }
+        function testFormHandler() { tester.testFormHandler(); }
+        function testEdgeCases() { tester.testEdgeCases(); }
+        function testErrorHandling() { tester.testErrorHandling(); }
+
+        function runFullTestSuite() {
+            tester.results = [];
+            tester.output.innerHTML = '';
+            
+            tester.log('🚀 STARTING FULL QA TEST SUITE...', 'info');
+            testDependencyLoading();
+            testCalculatorModule();
+            testUIManager();
+            testFormHandler();
+            testEdgeCases();
+            testErrorHandling();
+            tester.generateReport();
+        }
+
+        // Auto-run basic tests on load
+        setTimeout(() => {
+            tester.log('🔄 Auto-running dependency tests...', 'info');
+            testDependencyLoading();
+        }, 1000);
+    </script>
+</body>
+</html>

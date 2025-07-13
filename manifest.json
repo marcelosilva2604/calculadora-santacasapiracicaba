@@ -1,0 +1,76 @@
+{
+  "name": "Calculadora de Balanço Hídrico - Santa Casa Piracicaba",
+  "short_name": "Balanço Hídrico",
+  "description": "Calculadora profissional de balanço hídrico para equipes médicas",
+  "version": "2.0.0",
+  "start_url": "/index-healthcare.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#2563eb",
+  "background_color": "#f8fafc",
+  "categories": ["medical", "health", "productivity"],
+  
+  "icons": [
+    {
+      "src": "static/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "static/img/icon-512.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  
+  "screenshots": [
+    {
+      "src": "static/img/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Calculadora no mobile"
+    },
+    {
+      "src": "static/img/screenshot-desktop.png", 
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Interface desktop"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Novo Paciente",
+      "short_name": "Novo",
+      "description": "Iniciar cálculo para novo paciente",
+      "url": "/index-healthcare.html?action=new",
+      "icons": [
+        {
+          "src": "static/img/shortcut-new.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Testes de Segurança",
+      "short_name": "Segurança", 
+      "description": "Executar testes de segurança",
+      "url": "/security-test.html",
+      "icons": [
+        {
+          "src": "static/img/shortcut-security.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  
+  "prefer_related_applications": false,
+  "scope": "/",
+  "lang": "pt-BR",
+  "dir": "ltr"
+}

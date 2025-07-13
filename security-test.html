@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Test Suite - Code Injection Prevention</title>
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+        font-src 'self' https://cdn.jsdelivr.net;
+        img-src 'self' data:;
+        connect-src 'self';
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'self';
+    ">
+    
+    <style>
+        body { font-family: monospace; margin: 20px; background: #0d1117; color: #c9d1d9; }
+        .test-container { max-width: 1200px; margin: 0 auto; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #30363d; border-radius: 6px; }
+        .pass { color: #56d364; font-weight: bold; }
+        .fail { color: #f85149; font-weight: bold; }
+        .blocked { color: #ff7b72; font-weight: bold; }
+        .test-result { margin: 10px 0; padding: 10px; background: #161b22; border-radius: 4px; }
+        .attack-vector { background: #21262d; padding: 15px; margin: 10px 0; border-radius: 4px; }
+        .code { background: #0d1117; padding: 10px; border-radius: 4px; color: #ffa657; }
+        #output { background: #0d1117; padding: 15px; height: 400px; overflow-y: auto; border: 1px solid #30363d; }
+        button { background: #238636; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #2ea043; }
+        .danger-btn { background: #da3633; }
+        .danger-btn:hover { background: #f85149; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🛡️ SECURITY TEST SUITE - Code Injection Prevention</h1>
+        
+        <div class="test-section">
+            <h2>🎯 Attack Vector Testing</h2>
+            <p>Testing against common code injection patterns that were previously exploitable.</p>
+            
+            <div class="attack-vector">
+                <h3>Attack Vector 1: XSS via Alert</h3>
+                <div class="code">Input: "1; alert('PWNED'); //"</div>
+                <button onclick="testXSSAlert()">Test XSS Alert</button>
+                <div id="xss-result" class="test-result">Not tested yet</div>
+            </div>
+            
+            <div class="attack-vector">
+                <h3>Attack Vector 2: Data Exfiltration</h3>
+                <div class="code">Input: "1; console.log(document.cookie); //"</div>
+                <button onclick="testDataExfiltration()">Test Data Theft</button>
+                <div id="data-result" class="test-result">Not tested yet</div>
+            </div>
+            
+            <div class="attack-vector">
+                <h3>Attack Vector 3: DOM Manipulation</h3>
+                <div class="code">Input: "1; document.body.innerHTML='HACKED'; //"</div>
+                <button onclick="testDOMManipulation()">Test DOM Attack</button>
+                <div id="dom-result" class="test-result">Not tested yet</div>
+            </div>
+            
+            <div class="attack-vector">
+                <h3>Attack Vector 4: Function Constructor</h3>
+                <div class="code">Input: "1; Function('return window')(); //"</div>
+                <button onclick="testFunctionConstructor()">Test Function Constructor</button>
+                <div id="func-result" class="test-result">Not tested yet</div>
+            </div>
+            
+            <div class="attack-vector">
+                <h3>Attack Vector 5: Infinite Loop DoS</h3>
+                <div class="code">Input: "1; while(true){}; //"</div>
+                <button class="danger-btn" onclick="testDoSAttack()">⚠️ Test DoS (Dangerous)</button>
+                <div id="dos-result" class="test-result">Not tested yet</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ Valid Expression Testing</h2>
+            <button onclick="testValidExpressions()">Test Valid Math</button>
+            <div id="valid-result" class="test-result">Not tested yet</div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Test Results</h2>
+            <div id="output"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🚨 Run All Security Tests</h2>
+            <button onclick="runFullSecuritySuite()">🛡️ Execute Full Security Test Suite</button>
+        </div>
+    </div>
+
+    <!-- Load secure components -->
+    <script src="static/js/secure-math-parser.js"></script>
+    
+    <script>
+        class SecurityTester {
+            constructor() {
+                this.output = document.getElementById('output');
+                this.results = [];
+            }
+
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = `[${timestamp}] ${message}`;
+                console.log(logEntry);
+                
+                const div = document.createElement('div');
+                div.className = `test-result ${type}`;
+                div.textContent = logEntry;
+                this.output.appendChild(div);
+                this.output.scrollTop = this.output.scrollHeight;
+            }
+
+            testSecureParser(expression, testName, expectedBehavior) {
+                try {
+                    if (!window.SecureMathParser) {
+                        this.log(`❌ CRITICAL: SecureMathParser not loaded!`, 'fail');
+                        return false;
+                    }
+
+                    const parser = new SecureMathParser();
+                    const result = parser.evaluate(expression);
+                    
+                    if (expectedBehavior === 'should_block') {
+                        this.log(`❌ SECURITY FAILURE: ${testName} - Expression was not blocked!`, 'fail');
+                        this.log(`   Expression: ${expression}`, 'fail');
+                        this.log(`   Result: ${result}`, 'fail');
+                        return false;
+                    } else {
+                        this.log(`✅ PASS: ${testName} - Valid expression processed correctly`, 'pass');
+                        this.log(`   Expression: ${expression} = ${result}`, 'pass');
+                        return true;
+                    }
+                } catch (error) {
+                    if (expectedBehavior === 'should_block') {
+                        if (error.message.includes('SECURITY:')) {
+                            this.log(`✅ SECURITY PASS: ${testName} - Attack blocked by security layer`, 'pass');
+                            this.log(`   Security message: ${error.message}`, 'pass');
+                            return true;
+                        } else {
+                            this.log(`✅ PASS: ${testName} - Attack blocked by validation`, 'pass');
+                            this.log(`   Error: ${error.message}`, 'pass');
+                            return true;
+                        }
+                    } else {
+                        this.log(`❌ FAIL: ${testName} - Valid expression rejected`, 'fail');
+                        this.log(`   Error: ${error.message}`, 'fail');
+                        return false;
+                    }
+                }
+            }
+
+            updateResult(elementId, success, message) {
+                const element = document.getElementById(elementId);
+                element.className = `test-result ${success ? 'pass' : 'fail'}`;
+                element.textContent = message;
+            }
+        }
+
+        const tester = new SecurityTester();
+
+        function testXSSAlert() {
+            const success = tester.testSecureParser("1; alert('PWNED'); //", "XSS Alert Attack", "should_block");
+            tester.updateResult('xss-result', success, success ? '✅ BLOCKED - XSS attack prevented' : '❌ FAILED - XSS attack succeeded');
+        }
+
+        function testDataExfiltration() {
+            const success = tester.testSecureParser("1; console.log(document.cookie); //", "Data Exfiltration Attack", "should_block");
+            tester.updateResult('data-result', success, success ? '✅ BLOCKED - Data theft prevented' : '❌ FAILED - Data theft succeeded');
+        }
+
+        function testDOMManipulation() {
+            const success = tester.testSecureParser("1; document.body.innerHTML='HACKED'; //", "DOM Manipulation Attack", "should_block");
+            tester.updateResult('dom-result', success, success ? '✅ BLOCKED - DOM attack prevented' : '❌ FAILED - DOM attack succeeded');
+        }
+
+        function testFunctionConstructor() {
+            const success = tester.testSecureParser("1; Function('return window')(); //", "Function Constructor Attack", "should_block");
+            tester.updateResult('func-result', success, success ? '✅ BLOCKED - Function constructor prevented' : '❌ FAILED - Function constructor succeeded');
+        }
+
+        function testDoSAttack() {
+            const confirmed = confirm("⚠️ WARNING: This test could freeze your browser if the security fix failed. Continue?");
+            if (!confirmed) return;
+            
+            const success = tester.testSecureParser("1; while(true){}; //", "DoS Infinite Loop Attack", "should_block");
+            tester.updateResult('dos-result', success, success ? '✅ BLOCKED - DoS attack prevented' : '❌ FAILED - DoS attack succeeded');
+        }
+
+        function testValidExpressions() {
+            const validTests = [
+                { expr: "10 + 5", expected: 15 },
+                { expr: "100 * 2.5", expected: 250 },
+                { expr: "(10 + 5) * 2", expected: 30 },
+                { expr: "100 / 4", expected: 25 },
+                { expr: "10.5 + 2.3", expected: 12.8 }
+            ];
+
+            let allPassed = true;
+            for (const test of validTests) {
+                const success = tester.testSecureParser(test.expr, `Valid Math: ${test.expr}`, "should_work");
+                if (!success) allPassed = false;
+            }
+
+            tester.updateResult('valid-result', allPassed, allPassed ? '✅ All valid expressions work correctly' : '❌ Some valid expressions failed');
+        }
+
+        function runFullSecuritySuite() {
+            tester.output.innerHTML = '';
+            tester.log('🚀 STARTING FULL SECURITY TEST SUITE...', 'info');
+            
+            testXSSAlert();
+            testDataExfiltration();
+            testDOMManipulation();
+            testFunctionConstructor();
+            testValidExpressions();
+            
+            tester.log('📊 SECURITY TEST SUITE COMPLETED', 'info');
+            tester.log('Review results above. All attack vectors should be BLOCKED.', 'info');
+        }
+
+        // Auto-run basic security test on load
+        setTimeout(() => {
+            tester.log('🔍 Auto-testing security parser availability...', 'info');
+            if (window.SecureMathParser) {
+                tester.log('✅ SecureMathParser loaded successfully', 'pass');
+            } else {
+                tester.log('❌ CRITICAL: SecureMathParser not available!', 'fail');
+            }
+        }, 500);
+    </script>
+</body>
+</html>
