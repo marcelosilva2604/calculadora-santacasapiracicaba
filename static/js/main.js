@@ -62,16 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Enviar dados para o servidor
-        fetch('/calculate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
+        // Calcular localmente (sem servidor)
+        try {
+            const data = calculateBalance(formData);
+            
             // Verificar se houve erro
             if (data.error) {
                 alert(data.error);
@@ -138,11 +132,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Scroll para os resultados
             resultArea.scrollIntoView({ behavior: 'smooth' });
-        })
-        .catch(error => {
+        } catch (error) {
             console.error('Erro:', error);
             alert('Ocorreu um erro ao calcular o balanço hídrico. Por favor, tente novamente.');
-        });
+        }
     });
     
     // Botão para copiar resultado
@@ -452,5 +445,131 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Avaliar a expressão de forma segura
         return Function('"use strict"; return (' + expression + ')')();
+    }
+    
+    // Função de cálculo do balanço hídrico (migrada do Flask)
+    function calculateBalance(data) {
+        const inputs = data.inputs || {};
+        const outputs = data.outputs || {};
+        const patientInfo = data.patientInfo || {};
+        const measurements = data.measurements || {};
+        
+        // Obter peso do paciente e período
+        const patientWeight = parseFloat(patientInfo.weight || 0);
+        const timeframe = parseInt(data.timeframe || 24);
+        
+        // Verificar se o peso é válido
+        if (patientWeight <= 0) {
+            return {
+                error: "O peso do paciente deve ser maior que zero para calcular o balanço hídrico."
+            };
+        }
+        
+        // Cálculos de entradas individuais
+        const diet = parseFloat(inputs.diet || 0);
+        const serum = parseFloat(inputs.serum || 0);
+        const medication = parseFloat(inputs.medication || 0);
+        
+        // Calcular valores por kg
+        const dietPerKg = diet / patientWeight;
+        const serumPerKg = serum / patientWeight;
+        const medicationPerKg = medication / patientWeight;
+        
+        // Cálculos de saídas
+        const diuresis = parseFloat(outputs.diuresis || 0);
+        const gastricResidue = parseFloat(outputs.gastricResidue || 0);
+        const emesis = parseFloat(outputs.emesis || 0);
+        const evacuations = parseFloat(outputs.evacuations || 0);
+        
+        // Calcular valores por kg
+        const gastricResiduePerKg = gastricResidue / patientWeight;
+        
+        // Cálculos totais de entrada e saída em ml
+        const totalInput = diet + serum + medication;
+        const totalOutput = diuresis + gastricResidue;
+        
+        // Cálculo do balanço simples em ml
+        const balance = totalInput - totalOutput;
+        
+        // Cálculos avançados
+        const liquidIntake = totalInput / patientWeight;
+        
+        // Diurese em ml/kg/h
+        let diuresisPerKgHour = 0;
+        if (patientWeight > 0 && timeframe > 0) {
+            diuresisPerKgHour = diuresis / timeframe / patientWeight;
+        }
+        
+        // Balanço hídrico por peso
+        const balancePerKg = balance / patientWeight;
+        
+        // Débito hídrico por peso
+        const outputPerKg = totalOutput / patientWeight;
+        
+        // Determinando o status do balanço
+        let status;
+        if (balance > 0) {
+            status = "positivo";
+        } else if (balance < 0) {
+            status = "negativo";
+        } else {
+            status = "neutro";
+        }
+        
+        // Dados do paciente e medições
+        let patientName = patientInfo.name || '';
+        
+        // Formatação do nome do paciente
+        if (patientName) {
+            // Converter para title case
+            let formattedName = patientName.split(' ').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            ).join(' ');
+            
+            // Usar regex para substituir qualquer variação de "rn" por "RN"
+            formattedName = formattedName.replace(/\brn\b/gi, 'RN');
+            
+            // Ajustar preposições para minúsculas após RN
+            formattedName = formattedName.replace(/RN (De|Do|Da|Dos|Das)\b/g, (match, prep) => `RN ${prep.toLowerCase()}`);
+            
+            patientName = formattedName;
+        }
+        
+        // Criando o resultado detalhado
+        return {
+            // Entradas
+            diet: Math.round(diet * 100) / 100,
+            diet_per_kg: Math.round(dietPerKg * 100) / 100,
+            serum: Math.round(serum * 100) / 100,
+            serum_per_kg: Math.round(serumPerKg * 100) / 100,
+            medication: Math.round(medication * 100) / 100,
+            medication_per_kg: Math.round(medicationPerKg * 100) / 100,
+            total_input: Math.round(totalInput * 100) / 100,
+            liquid_intake: Math.round(liquidIntake * 100) / 100,
+            
+            // Saídas
+            diuresis: Math.round(diuresis * 100) / 100,
+            diuresis_per_kg_hour: Math.round(diuresisPerKgHour * 100) / 100,
+            gastric_residue: Math.round(gastricResidue * 100) / 100,
+            gastric_residue_per_kg: Math.round(gastricResiduePerKg * 100) / 100,
+            emesis_count: Math.round(emesis),
+            evacuations_count: Math.round(evacuations),
+            total_output: Math.round(totalOutput * 100) / 100,
+            output_per_kg: Math.round(outputPerKg * 100) / 100,
+            
+            // Balanço
+            balance: Math.round(balance * 100) / 100,
+            balance_per_kg: Math.round(balancePerKg * 100) / 100,
+            status: status,
+            
+            // Dados do paciente e medições
+            patient: {
+                name: patientName,
+                bed: patientInfo.bed || '',
+                weight: patientWeight,
+                timeframe: timeframe
+            },
+            measurements: measurements
+        };
     }
 }); 

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Balanço Hídrico - Santa Casa Piracicaba</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="static/css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="static/img/logo.png" alt="Santa Casa Piracicaba" height="30" class="me-2">
+                Calculadora de Balanço Hídrico
+            </a>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="main-content">
+                    <div class="header-section text-center mb-4">
+                        <h1 class="display-6 text-primary">Calculadora de Balanço Hídrico</h1>
+                        <p class="lead text-muted">Sistema para cálculo de balanço hídrico pediátrico</p>
+                    </div>
+
+                    <!-- Seleção do período -->
+                    <div class="period-selection mb-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Período de Avaliação</h5>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="timeframe" id="period12" value="12">
+                                    <label class="btn btn-outline-primary" for="period12">12 horas</label>
+                                    
+                                    <input type="radio" class="btn-check" name="timeframe" id="period24" value="24" checked>
+                                    <label class="btn btn-outline-primary" for="period24">24 horas</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs de navegação -->
+                    <div class="form-section">
+                        <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="patient-tab" data-bs-toggle="tab" data-bs-target="#patient" type="button" role="tab">
+                                    <i class="bi bi-person-fill me-2"></i>Dados do Paciente
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="measurements-tab" data-bs-toggle="tab" data-bs-target="#measurements" type="button" role="tab">
+                                    <i class="bi bi-thermometer-half me-2"></i>Medições
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="values-tab" data-bs-toggle="tab" data-bs-target="#values" type="button" role="tab">
+                                    <i class="bi bi-calculator me-2"></i>Valores
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="myTabContent">
+                            <!-- Aba Dados do Paciente -->
+                            <div class="tab-pane fade show active" id="patient" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="patientName" class="form-label">Nome do Paciente:</label>
+                                            <input type="text" class="form-control" id="patientName" placeholder="Nome completo">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="patientBed" class="form-label">Leito:</label>
+                                            <input type="text" class="form-control" id="patientBed" placeholder="Número do leito">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="patientWeight" class="form-label">Peso (kg):</label>
+                                            <input type="number" class="form-control" id="patientWeight" placeholder="Peso em kg" step="0.1" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Aba Medições -->
+                            <div class="tab-pane fade" id="measurements" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="heartRate" class="form-label">Frequência Cardíaca (bpm):</label>
+                                            <input type="number" class="form-control" id="heartRate" placeholder="FC em bpm">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="respiratoryRate" class="form-label">Frequência Respiratória (irpm):</label>
+                                            <input type="number" class="form-control" id="respiratoryRate" placeholder="FR em irpm">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="oxygenSaturation" class="form-label">Saturação de Oxigênio (%):</label>
+                                            <input type="number" class="form-control" id="oxygenSaturation" placeholder="SatO2 em %" min="0" max="100">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="temperature" class="form-label">Temperatura (°C):</label>
+                                            <input type="number" class="form-control" id="temperature" placeholder="Temperatura em °C" step="0.1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="meanArterialPressure" class="form-label">Pressão Arterial Média (mmHg):</label>
+                                            <input type="number" class="form-control" id="meanArterialPressure" placeholder="PAM em mmHg">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="capillaryGlycemia" class="form-label">Glicemia Capilar (mg/dL):</label>
+                                            <input type="number" class="form-control" id="capillaryGlycemia" placeholder="Glicemia em mg/dL">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Aba Valores -->
+                            <div class="tab-pane fade" id="values" role="tabpanel">
+                                <div class="row">
+                                    <!-- Entradas -->
+                                    <div class="col-md-6">
+                                        <h5 class="text-success mb-3">
+                                            <i class="bi bi-arrow-down-circle me-2"></i>Entradas
+                                        </h5>
+                                        
+                                        <!-- Dieta -->
+                                        <div class="value-input-group mb-3">
+                                            <label class="form-label fw-bold">Dieta (ml):</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="dietInput" placeholder="Ex: 150+50 ou 200">
+                                                <button class="btn btn-success" type="button" id="addDietBtn">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" type="button" id="clearDietBtn">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <ul class="list-group mt-2" id="dietList"></ul>
+                                            <div class="total-display">Total: <span id="dietTotal" class="fw-bold">0</span> ml</div>
+                                            <input type="hidden" id="diet" value="0">
+                                        </div>
+
+                                        <!-- Soro -->
+                                        <div class="value-input-group mb-3">
+                                            <label class="form-label fw-bold">Soro (ml):</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="serumInput" placeholder="Ex: 500+200 ou 700">
+                                                <button class="btn btn-success" type="button" id="addSerumBtn">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" type="button" id="clearSerumBtn">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <ul class="list-group mt-2" id="serumList"></ul>
+                                            <div class="total-display">Total: <span id="serumTotal" class="fw-bold">0</span> ml</div>
+                                            <input type="hidden" id="serum" value="0">
+                                        </div>
+
+                                        <!-- Medicação -->
+                                        <div class="value-input-group mb-3">
+                                            <label class="form-label fw-bold">Medicação (ml):</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="medicationInput" placeholder="Ex: 10+5 ou 15">
+                                                <button class="btn btn-success" type="button" id="addMedicationBtn">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" type="button" id="clearMedicationBtn">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <ul class="list-group mt-2" id="medicationList"></ul>
+                                            <div class="total-display">Total: <span id="medicationTotal" class="fw-bold">0</span> ml</div>
+                                            <input type="hidden" id="medication" value="0">
+                                        </div>
+                                    </div>
+
+                                    <!-- Saídas -->
+                                    <div class="col-md-6">
+                                        <h5 class="text-danger mb-3">
+                                            <i class="bi bi-arrow-up-circle me-2"></i>Saídas
+                                        </h5>
+                                        
+                                        <!-- Diurese -->
+                                        <div class="value-input-group mb-3">
+                                            <label class="form-label fw-bold">Diurese (ml):</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="diuresisInput" placeholder="Ex: 120+80 ou 200">
+                                                <button class="btn btn-success" type="button" id="addDiuresisBtn">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" type="button" id="clearDiuresisBtn">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <ul class="list-group mt-2" id="diuresisList"></ul>
+                                            <div class="total-display">Total: <span id="diuresisTotal" class="fw-bold">0</span> ml</div>
+                                            <input type="hidden" id="diuresis" value="0">
+                                        </div>
+
+                                        <!-- Resíduo Gástrico -->
+                                        <div class="value-input-group mb-3">
+                                            <label class="form-label fw-bold">Resíduo Gástrico (ml):</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="gastricResidueInput" placeholder="Ex: 30+20 ou 50">
+                                                <button class="btn btn-success" type="button" id="addGastricResidueBtn">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" type="button" id="clearGastricResidueBtn">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <ul class="list-group mt-2" id="gastricResidueList"></ul>
+                                            <div class="total-display">Total: <span id="gastricResidueTotal" class="fw-bold">0</span> ml</div>
+                                            <input type="hidden" id="gastricResidue" value="0">
+                                        </div>
+
+                                        <!-- Êmese -->
+                                        <div class="value-input-group mb-3">
+                                            <label class="form-label fw-bold">Êmese (vezes):</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="emesisInput" placeholder="Ex: 2+1 ou 3">
+                                                <button class="btn btn-success" type="button" id="addEmesisBtn">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" type="button" id="clearEmesisBtn">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <ul class="list-group mt-2" id="emesisList"></ul>
+                                            <div class="total-display">Total: <span id="emesisTotal" class="fw-bold">0</span> vezes</div>
+                                            <input type="hidden" id="emesis" value="0">
+                                        </div>
+
+                                        <!-- Evacuação -->
+                                        <div class="value-input-group mb-3">
+                                            <label class="form-label fw-bold">Evacuação (vezes):</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="evacuationsInput" placeholder="Ex: 1+1 ou 2">
+                                                <button class="btn btn-success" type="button" id="addEvacuationsBtn">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" type="button" id="clearEvacuationsBtn">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <ul class="list-group mt-2" id="evacuationsList"></ul>
+                                            <div class="total-display">Total: <span id="evacuationsTotal" class="fw-bold">0</span> vezes</div>
+                                            <input type="hidden" id="evacuations" value="0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botão Calcular -->
+                    <div class="text-center mb-4">
+                        <button type="button" class="btn btn-primary btn-lg" id="calculateBtn">
+                            <i class="bi bi-calculator me-2"></i>Calcular Balanço Hídrico
+                        </button>
+                    </div>
+
+                    <!-- Área de Resultados -->
+                    <div id="resultArea" class="result-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">
+                                    <i class="bi bi-clipboard-data me-2"></i>Relatório de Balanço Hídrico
+                                </h4>
+                                <div>
+                                    <button class="btn btn-outline-primary me-2" id="copyResultBtn">
+                                        <i class="bi bi-clipboard me-1"></i>Copiar
+                                    </button>
+                                    <button class="btn btn-outline-secondary" id="newPatientBtn">
+                                        <i class="bi bi-plus-circle me-1"></i>Novo Paciente
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="report">
+                                    <!-- Informações do Paciente -->
+                                    <div class="patient-info mb-4">
+                                        <h5 class="text-primary border-bottom pb-2">Informações do Paciente</h5>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <h6 class="patient-name" id="patientNameResult">Nome do Paciente</h6>
+                                            </div>
+                                            <div class="col-md-4 text-end">
+                                                <span class="badge bg-secondary">Leito: <span id="patientBedResult">N/A</span></span>
+                                                <span class="badge bg-info ms-2">Peso: <span id="patientWeightResult">0</span> kg</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Medições -->
+                                    <div class="measurements mb-4">
+                                        <h5 class="text-primary border-bottom pb-2">Medições</h5>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <ul class="list-unstyled mb-0">
+                                                    <li id="heartRateResult">Frequência cardíaca: N/A</li>
+                                                    <li id="respiratoryRateResult">Frequência respiratória: N/A</li>
+                                                    <li id="oxygenSaturationResult">Saturação de Oxigênio: N/A</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <ul class="list-unstyled mb-0">
+                                                    <li id="temperatureResult">Temperatura: N/A</li>
+                                                    <li id="meanArterialPressureResult">Pressão arterial média: N/A</li>
+                                                    <li id="capillaryGlycemiaResult">Glicemia Capilar: N/A</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Entradas -->
+                                    <div class="inputs-section mb-4">
+                                        <h5 class="text-success border-bottom pb-2">
+                                            <i class="bi bi-arrow-down-circle me-2"></i>Entradas
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <ul class="list-unstyled">
+                                                    <li>Dieta = <span id="dietResult">0</span> ml / <span id="dietPerKgResult">0</span> ml/kg</li>
+                                                    <li>Soro = <span id="serumResult">0</span> ml / <span id="serumPerKgResult">0</span> ml/kg</li>
+                                                    <li>Medicação = <span id="medicationResult">0</span> ml / <span id="medicationPerKgResult">0</span> ml/kg</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="fw-bold text-success">
+                                                    Oferta hídrica = <span id="totalInputResult">0</span> ml / <span id="liquidIntakeResult">0</span> ml/kg
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Saídas -->
+                                    <div class="outputs-section mb-4">
+                                        <h5 class="text-danger border-bottom pb-2">
+                                            <i class="bi bi-arrow-up-circle me-2"></i>Saídas
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <ul class="list-unstyled">
+                                                    <li>Diurese = <span id="diuresisResult">0</span> ml / <span id="diuresisPerKgHourResult">0</span> ml/kg/h</li>
+                                                    <li>Resíduo Gástrico = <span id="gastricResidueResult">0</span> ml / <span id="gastricResiduePerKgResult">0</span> ml/kg</li>
+                                                    <li>Êmese = <span id="emesisCountResult">0</span> vezes</li>
+                                                    <li>Evacuação = <span id="evacuationsCountResult">0</span> vezes</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="fw-bold text-danger">
+                                                    Débito Hídrico = <span id="totalOutputResult">0</span> ml / <span id="outputPerKgResult">0</span> ml/kg
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Balanço Final -->
+                                    <div class="balance-section">
+                                        <h5 class="text-primary border-bottom pb-2">
+                                            <i class="bi bi-scales me-2"></i>Balanço Hídrico
+                                        </h5>
+                                        <div class="balance-result p-3 bg-light rounded">
+                                            <div class="row text-center">
+                                                <div class="col-md-6">
+                                                    <h4>Balanço Hídrico</h4>
+                                                    <p class="display-6 mb-0">
+                                                        <span id="balanceResult" class="fw-bold">0</span> ml
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h4>Por Peso</h4>
+                                                    <p class="display-6 mb-0">
+                                                        <span id="balancePerKgResult" class="fw-bold">0</span> ml/kg
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="text-center mt-3">
+                                                <small class="text-muted">Período: <span id="timeframeResult">24</span> horas</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-5">
+        <div class="container text-center">
+            <span class="text-muted">© 2024 Santa Casa de Piracicaba - Calculadora de Balanço Hídrico</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/main.js"></script>
+</body>
+</html>
