@@ -111,7 +111,7 @@ class HealthcareInterface {
         this.updateConnectionStatus(this.isOnline);
         
         // Cache form data locally
-        this.setupLocalStorage();
+        // this.setupLocalStorage(); // TODO: Implementar localStorage
         
         // Show offline notification
         if (!this.isOnline) {
