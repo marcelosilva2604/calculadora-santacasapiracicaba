@@ -66,7 +66,8 @@ class ReportGenerator {
         const collectedData = [];
 
         vitalSigns.forEach(vital => {
-            const fieldHandler = window.calculationFields?.[vital.id];
+            const formHandler = window.hydricBalanceApp?.formHandler;
+            const fieldHandler = formHandler?.calculationFields?.get(vital.id);
             
             if (fieldHandler && fieldHandler.values && fieldHandler.values.length > 0) {
                 const values = fieldHandler.values;
@@ -185,21 +186,42 @@ class ReportGenerator {
      * Exibe o relatório no modal
      */
     showReport() {
+        console.log('showReport() chamado');
+        
         const reportContent = document.getElementById('report-content');
         const reportModal = document.getElementById('report-modal');
         
+        console.log('reportContent:', reportContent);
+        console.log('reportModal:', reportModal);
+        
         if (!reportContent || !reportModal) {
             console.error('Elementos do modal não encontrados');
+            alert('Erro: Elementos do modal não encontrados');
             return;
         }
 
         // Gerar conteúdo do relatório
         const reportHTML = this.generateReportHTML();
+        console.log('reportHTML gerado:', reportHTML);
         reportContent.innerHTML = reportHTML;
 
+        // Verificar se Bootstrap está disponível
+        if (typeof bootstrap === 'undefined') {
+            console.error('Bootstrap não está carregado');
+            alert('Erro: Bootstrap não está carregado');
+            return;
+        }
+
         // Exibir modal (usando Bootstrap)
-        const modal = new bootstrap.Modal(reportModal);
-        modal.show();
+        try {
+            const modal = new bootstrap.Modal(reportModal);
+            console.log('Modal criado:', modal);
+            modal.show();
+            console.log('Modal.show() chamado');
+        } catch (error) {
+            console.error('Erro ao exibir modal:', error);
+            alert('Erro ao exibir relatório: ' + error.message);
+        }
     }
 }
 

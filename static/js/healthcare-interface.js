@@ -295,6 +295,8 @@ class HealthcareInterface {
      * Calculate hydric balance
      */
     async calculateBalance() {
+        console.log('calculateBalance() chamado');
+        
         try {
             // Show loading state
             const button = document.getElementById('calculate-button');
@@ -304,7 +306,10 @@ class HealthcareInterface {
 
             // Validar dados mínimos para o relatório
             const patientName = document.getElementById('patient-name')?.value;
+            console.log('patientName:', patientName);
+            
             if (!patientName || patientName.trim() === '') {
+                console.log('Nome do paciente não informado');
                 this.showToast('Por favor, informe o nome do paciente.', 'error');
                 button.innerHTML = originalText;
                 button.disabled = false;
@@ -312,10 +317,14 @@ class HealthcareInterface {
             }
 
             // Gerar e exibir relatório
+            console.log('window.reportGenerator:', window.reportGenerator);
+            
             if (window.reportGenerator) {
+                console.log('Chamando reportGenerator.showReport()');
                 window.reportGenerator.showReport();
                 this.announceChange('Relatório gerado com sucesso.');
             } else {
+                console.error('Gerador de relatório não disponível');
                 throw new Error('Gerador de relatório não disponível');
             }
 
@@ -325,6 +334,7 @@ class HealthcareInterface {
 
         } catch (error) {
             console.error('Erro ao gerar relatório:', error);
+            alert('Erro ao gerar relatório: ' + error.message);
             this.showToast('Erro ao gerar relatório. Tente novamente.', 'error');
             
             // Restore button
