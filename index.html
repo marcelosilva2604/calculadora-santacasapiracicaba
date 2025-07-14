@@ -66,17 +66,10 @@
     <!-- Header -->
     <header class="healthcare-header" role="banner">
         <div class="healthcare-container">
-            <a href="#" class="healthcare-logo" aria-label="Santa Casa Piracicaba - Página inicial">
+            <a href="#" class="healthcare-logo" aria-label="Santa Casa Piracicaba - Calculadora de Balanço Hídrico">
                 <i class="bi bi-heart-pulse-fill" aria-hidden="true"></i>
-                <div>
-                    <div>Calculadora de Balanço Hídrico</div>
-                    <div class="healthcare-badge">Santa Casa Piracicaba</div>
-                </div>
+                <div>Calculadora de Balanço Hídrico - Santa Casa Piracicaba</div>
             </a>
-            <div class="healthcare-status" id="connection-status" aria-live="polite">
-                <span class="status-indicator online" aria-label="Status: Online"></span>
-                <span class="status-text">Online</span>
-            </div>
         </div>
     </header>
 
@@ -86,23 +79,16 @@
         <!-- Desktop Toolbar -->
         <div class="desktop-toolbar">
             <div class="toolbar-section">
-                <span class="toolbar-label">Período:</span>
-                <div class="period-selector-compact">
-                    <label class="radio-compact">
+                <div class="period-selector-toolbar" style="display: flex; align-items: center; gap: 15px;">
+                    <label class="form-label" style="margin: 0; font-weight: 600;">Período de Avaliação:</label>
+                    <label class="radio-compact" style="margin: 0;">
                         <input type="radio" name="timeframe" value="12" id="period-12">
-                        <span>12h</span>
+                        <span>12 horas</span>
                     </label>
-                    <label class="radio-compact">
+                    <label class="radio-compact" style="margin: 0;">
                         <input type="radio" name="timeframe" value="24" id="period-24" checked>
-                        <span>24h</span>
+                        <span>24 horas</span>
                     </label>
-                </div>
-            </div>
-            
-            <div class="toolbar-section">
-                <div class="progress-compact" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso do preenchimento">
-                    <div class="progress-bar-compact" id="progress-bar"></div>
-                    <span class="progress-text-compact" id="progress-text">0% concluído</span>
                 </div>
             </div>
             
@@ -144,7 +130,6 @@
                                 id="patient-name" 
                                 class="form-control" 
                                 placeholder="Nome completo do paciente"
-                                required
                                 autocomplete="name"
                                 tabindex="1"
                             >
@@ -162,258 +147,295 @@
                                 >
                             </div>
                             <div class="form-group">
-                                <label for="patient-weight" class="form-label required">Peso</label>
-                                <div class="input-group-desktop">
-                                    <input 
-                                        type="number" 
-                                        id="patient-weight" 
-                                        class="form-control" 
-                                        placeholder="0.0"
-                                        step="0.1"
-                                        min="0.1"
-                                        max="300"
-                                        required
-                                        tabindex="3"
-                                    >
-                                    <span class="input-unit">kg</span>
-                                </div>
+                                <label for="patient-weight" class="form-label required">Peso (kg)</label>
+                                <input 
+                                    type="number" 
+                                    id="patient-weight" 
+                                    class="form-control" 
+                                    placeholder="0.0"
+                                    step="0.1"
+                                    min="0.1"
+                                    max="300"
+                                    tabindex="3"
+                                >
                             </div>
                         </div>
 
-                        <!-- Desktop Measurements Grid -->
-                        <div class="measurements-section">
-                            <h3 class="section-subtitle">Sinais Vitais</h3>
-                            <div class="measurements-desktop-grid">
-                                <div class="measurement-field">
-                                    <label class="measurement-label">FC</label>
-                                    <div class="input-group-desktop">
-                                        <input type="text" id="heart-rate-input" class="form-control compact" placeholder="Ex: 80+90" tabindex="4">
-                                        <button type="button" class="healthcare-button compact icon-only primary" onclick="addCalculationValue('heart-rate')" aria-label="Adicionar FC">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                    </div>
-                                    <div class="measurement-total" id="heart-rate-total">--</div>
-                                    <input type="hidden" id="heart-rate" value="0">
-                                </div>
+                        <!-- Vital Signs Section -->
+                        <div style="margin-top: 25px;">
+                            <h3 class="section-subtitle" style="margin-bottom: 15px;">
+                                <i class="bi bi-heart-pulse"></i>
+                                Sinais Vitais
+                            </h3>
 
-                                <div class="measurement-field">
-                                    <label class="measurement-label">FR</label>
-                                    <div class="input-group-desktop">
-                                        <input type="text" id="respiratory-rate-input" class="form-control compact" placeholder="Ex: 18+20" tabindex="5">
-                                        <button type="button" class="healthcare-button compact icon-only primary" onclick="addCalculationValue('respiratory-rate')" aria-label="Adicionar FR">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                    </div>
-                                    <div class="measurement-total" id="respiratory-rate-total">--</div>
-                                    <input type="hidden" id="respiratory-rate" value="0">
+                            <!-- Heart Rate Section -->
+                            <div class="calculation-field-desktop" data-field="heart-rate">
+                                <div class="calculation-label-desktop">
+                                    <i class="bi bi-heart"></i>
+                                    Frequência Cardíaca (bpm)
                                 </div>
+                                <div class="calculation-input-desktop">
+                                    <input type="text" id="heart-rate-input" class="form-control compact" placeholder="Ex: 80+75" tabindex="4">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('heart-rate')">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('heart-rate')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="calculation-list-desktop" id="heart-rate-list"></div>
+                                <input type="hidden" id="heart-rate" value="0">
+                            </div>
 
-                                <div class="measurement-field">
-                                    <label class="measurement-label">SatO₂</label>
-                                    <div class="input-group-desktop">
-                                        <input type="text" id="oxygen-saturation-input" class="form-control compact" placeholder="Ex: 98+97" tabindex="6">
-                                        <button type="button" class="healthcare-button compact icon-only primary" onclick="addCalculationValue('oxygen-saturation')" aria-label="Adicionar SatO2">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                    </div>
-                                    <div class="measurement-total" id="oxygen-saturation-total">--</div>
-                                    <input type="hidden" id="oxygen-saturation" value="0">
+                            <!-- Respiratory Rate Section -->
+                            <div class="calculation-field-desktop" data-field="respiratory-rate" style="margin-top: 20px;">
+                                <div class="calculation-label-desktop">
+                                    <i class="bi bi-wind"></i>
+                                    Frequência Respiratória (irpm)
                                 </div>
+                                <div class="calculation-input-desktop">
+                                    <input type="text" id="respiratory-rate-input" class="form-control compact" placeholder="Ex: 18+20" tabindex="5">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('respiratory-rate')">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('respiratory-rate')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="calculation-list-desktop" id="respiratory-rate-list"></div>
+                                <input type="hidden" id="respiratory-rate" value="0">
+                            </div>
 
-                                <div class="measurement-field">
-                                    <label class="measurement-label">Temp</label>
-                                    <div class="input-group-desktop">
-                                        <input type="text" id="temperature-input" class="form-control compact" placeholder="Ex: 36,5+37,8" tabindex="7">
-                                        <button type="button" class="healthcare-button compact icon-only primary" onclick="addCalculationValue('temperature')" aria-label="Adicionar Temp">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                    </div>
-                                    <div class="measurement-total" id="temperature-total">--</div>
-                                    <input type="hidden" id="temperature" value="0">
+                            <!-- Oxygen Saturation Section -->
+                            <div class="calculation-field-desktop" data-field="oxygen-saturation" style="margin-top: 20px;">
+                                <div class="calculation-label-desktop">
+                                    <i class="bi bi-heart-pulse-fill"></i>
+                                    SatO₂ (%)
                                 </div>
+                                <div class="calculation-input-desktop">
+                                    <input type="text" id="oxygen-saturation-input" class="form-control compact" placeholder="Ex: 98+97" tabindex="6">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('oxygen-saturation')">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('oxygen-saturation')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="calculation-list-desktop" id="oxygen-saturation-list"></div>
+                                <input type="hidden" id="oxygen-saturation" value="0">
+                            </div>
 
-                                <div class="measurement-field">
-                                    <label class="measurement-label">PAM</label>
-                                    <div class="input-group-desktop">
-                                        <input type="text" id="blood-pressure-input" class="form-control compact" placeholder="Ex: 80+85" tabindex="8">
-                                        <button type="button" class="healthcare-button compact icon-only primary" onclick="addCalculationValue('blood-pressure')" aria-label="Adicionar PAM">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                    </div>
-                                    <div class="measurement-total" id="blood-pressure-total">--</div>
-                                    <input type="hidden" id="blood-pressure" value="0">
+                            <!-- Temperature Section -->
+                            <div class="calculation-field-desktop" data-field="temperature" style="margin-top: 20px;">
+                                <div class="calculation-label-desktop">
+                                    <i class="bi bi-thermometer-half"></i>
+                                    Temperatura (°C)
                                 </div>
+                                <div class="calculation-input-desktop">
+                                    <input type="text" id="temperature-input" class="form-control compact" placeholder="Ex: 36.5+37.8" tabindex="7">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('temperature')">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('temperature')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="calculation-list-desktop" id="temperature-list"></div>
+                                <input type="hidden" id="temperature" value="0">
+                            </div>
 
-                                <div class="measurement-field">
-                                    <label class="measurement-label">Glicemia</label>
-                                    <div class="input-group-desktop">
-                                        <input type="text" id="glucose-input" class="form-control compact" placeholder="Ex: 120+95" tabindex="9">
-                                        <button type="button" class="healthcare-button compact icon-only primary" onclick="addCalculationValue('glucose')" aria-label="Adicionar Glicemia">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                    </div>
-                                    <div class="measurement-total" id="glucose-total">--</div>
-                                    <input type="hidden" id="glucose" value="0">
+                            <!-- Mean Arterial Pressure Section -->
+                            <div class="calculation-field-desktop" data-field="mean-arterial-pressure" style="margin-top: 20px;">
+                                <div class="calculation-label-desktop">
+                                    <i class="bi bi-activity"></i>
+                                    PAM (mmHg)
                                 </div>
+                                <div class="calculation-input-desktop">
+                                    <input type="text" id="mean-arterial-pressure-input" class="form-control compact" placeholder="Ex: 80+85" tabindex="8">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('mean-arterial-pressure')">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('mean-arterial-pressure')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="calculation-list-desktop" id="mean-arterial-pressure-list"></div>
+                                <input type="hidden" id="mean-arterial-pressure" value="0">
+                            </div>
+
+                            <!-- Blood Glucose Section -->
+                            <div class="calculation-field-desktop" data-field="blood-glucose" style="margin-top: 20px;">
+                                <div class="calculation-label-desktop">
+                                    <i class="bi bi-droplet"></i>
+                                    Glicemia (mg/dL)
+                                </div>
+                                <div class="calculation-input-desktop">
+                                    <input type="text" id="blood-glucose-input" class="form-control compact" placeholder="Ex: 90+85" tabindex="9">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('blood-glucose')">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('blood-glucose')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="calculation-list-desktop" id="blood-glucose-list"></div>
+                                <input type="hidden" id="blood-glucose" value="0">
                             </div>
                         </div>
+
                     </div>
                 </div>
 
-                <!-- Column 2: Values Input/Output -->
-                <div class="values-section-desktop">
-                    <div class="values-header-desktop">
-                        <i class="bi bi-clipboard-data"></i>
-                        <h2 class="values-title-desktop">Balanço Hídrico</h2>
+                <!-- Column 2: Hydric Balance (Expanded) -->
+                <div class="form-panel" style="grid-column: span 2;">
+                    <div class="panel-header">
+                        <h2 class="panel-title">
+                            <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                            Balanço Hídrico
+                        </h2>
                     </div>
-                    
-                    <div class="values-desktop-grid">
-                        <!-- Inputs Section -->
-                        <div>
-                            <h3 class="section-subtitle" style="color: var(--medical-success);">
-                                <i class="bi bi-arrow-down-circle"></i>
-                                Entradas
-                            </h3>
-                            
-                            <div class="calculation-field-desktop" data-field="diet">
-                                <div class="calculation-label-desktop">
-                                    <i class="bi bi-cup-straw"></i>
-                                    Dieta (ml)
+                    <div class="panel-content">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                            <!-- Inputs Section (Left) -->
+                            <div style="background: #f8fff8; border: 2px solid #d4edda; border-radius: 8px; padding: 20px;">
+                                <h3 class="section-subtitle" style="color: var(--medical-success); margin-bottom: 15px; font-size: 18px; text-align: center; border-bottom: 2px solid var(--medical-success); padding-bottom: 10px;">
+                                    <i class="bi bi-arrow-down-circle"></i>
+                                    Entradas
+                                </h3>
+                                
+                                <div class="calculation-field-desktop" data-field="diet" style="margin-bottom: 10px;">
+                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                        <i class="bi bi-cup-straw"></i>
+                                        Dieta (ml)
+                                    </div>
+                                    <div class="calculation-input-desktop">
+                                        <input type="text" id="diet-input" class="form-control compact" placeholder="Ex: 150+50" tabindex="10" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('diet')" style="height: 32px;">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('diet')" style="height: 32px;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="calculation-total-desktop" id="diet-total" style="font-size: 12px; margin-top: 3px;">Total: 0 ml</div>
+                                    <input type="hidden" id="diet" value="0">
                                 </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="diet-input" class="form-control compact" placeholder="Ex: 150+50" tabindex="10">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('diet')">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('diet')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+
+                                <div class="calculation-field-desktop" data-field="serum" style="margin-bottom: 10px;">
+                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                        <i class="bi bi-droplet-fill"></i>
+                                        Soro (ml)
+                                    </div>
+                                    <div class="calculation-input-desktop">
+                                        <input type="text" id="serum-input" class="form-control compact" placeholder="Ex: 500+200" tabindex="11" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('serum')" style="height: 32px;">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('serum')" style="height: 32px;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="calculation-total-desktop" id="serum-total" style="font-size: 12px; margin-top: 3px;">Total: 0 ml</div>
+                                    <input type="hidden" id="serum" value="0">
                                 </div>
-                                <div class="calculation-list-desktop" id="diet-list"></div>
-                                <div class="calculation-total-desktop" id="diet-total">Total: 0 ml</div>
-                                <input type="hidden" id="diet" value="0">
+
+                                <div class="calculation-field-desktop" data-field="medication">
+                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                        <i class="bi bi-prescription2"></i>
+                                        Medicação (ml)
+                                    </div>
+                                    <div class="calculation-input-desktop">
+                                        <input type="text" id="medication-input" class="form-control compact" placeholder="Ex: 10+5" tabindex="12" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('medication')" style="height: 32px;">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('medication')" style="height: 32px;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="calculation-total-desktop" id="medication-total" style="font-size: 12px; margin-top: 3px;">Total: 0 ml</div>
+                                    <input type="hidden" id="medication" value="0">
+                                </div>
                             </div>
 
-                            <div class="calculation-field-desktop" data-field="serum">
-                                <div class="calculation-label-desktop">
-                                    <i class="bi bi-droplet-fill"></i>
-                                    Soro (ml)
+                            <!-- Outputs Section (Right) -->
+                            <div style="background: #fff8f8; border: 2px solid #f5c6cb; border-radius: 8px; padding: 20px;">
+                                <h3 class="section-subtitle" style="color: var(--medical-danger); margin-bottom: 15px; font-size: 18px; text-align: center; border-bottom: 2px solid var(--medical-danger); padding-bottom: 10px;">
+                                    <i class="bi bi-arrow-up-circle"></i>
+                                    Saídas
+                                </h3>
+                                
+                                <div class="calculation-field-desktop" data-field="diuresis" style="margin-bottom: 10px;">
+                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                        <i class="bi bi-droplet"></i>
+                                        Diurese (ml)
+                                    </div>
+                                    <div class="calculation-input-desktop">
+                                        <input type="text" id="diuresis-input" class="form-control compact" placeholder="Ex: 120+80" tabindex="13" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('diuresis')" style="height: 32px;">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('diuresis')" style="height: 32px;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="calculation-total-desktop" id="diuresis-total" style="font-size: 12px; margin-top: 3px;">Total: 0 ml</div>
+                                    <input type="hidden" id="diuresis" value="0">
                                 </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="serum-input" class="form-control compact" placeholder="Ex: 500+200" tabindex="11">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('serum')">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('serum')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="calculation-list-desktop" id="serum-list"></div>
-                                <div class="calculation-total-desktop" id="serum-total">Total: 0 ml</div>
-                                <input type="hidden" id="serum" value="0">
-                            </div>
 
-                            <div class="calculation-field-desktop" data-field="medication">
-                                <div class="calculation-label-desktop">
-                                    <i class="bi bi-prescription2"></i>
-                                    Medicação (ml)
+                                <div class="calculation-field-desktop" data-field="gastric-residue" style="margin-bottom: 10px;">
+                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                        <i class="bi bi-circle-square"></i>
+                                        Resíduo Gástrico (ml)
+                                    </div>
+                                    <div class="calculation-input-desktop">
+                                        <input type="text" id="gastric-residue-input" class="form-control compact" placeholder="Ex: 30+20" tabindex="14" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('gastric-residue')" style="height: 32px;">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('gastric-residue')" style="height: 32px;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="calculation-total-desktop" id="gastric-residue-total" style="font-size: 12px; margin-top: 3px;">Total: 0 ml</div>
+                                    <input type="hidden" id="gastric-residue" value="0">
                                 </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="medication-input" class="form-control compact" placeholder="Ex: 10+5" tabindex="12">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('medication')">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('medication')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="calculation-list-desktop" id="medication-list"></div>
-                                <div class="calculation-total-desktop" id="medication-total">Total: 0 ml</div>
-                                <input type="hidden" id="medication" value="0">
-                            </div>
-                        </div>
 
-                        <!-- Outputs Section -->
-                        <div>
-                            <h3 class="section-subtitle" style="color: var(--medical-danger);">
-                                <i class="bi bi-arrow-up-circle"></i>
-                                Saídas
-                            </h3>
-                            
-                            <div class="calculation-field-desktop" data-field="diuresis">
-                                <div class="calculation-label-desktop">
-                                    <i class="bi bi-droplet"></i>
-                                    Diurese (ml)
+                                <div class="calculation-field-desktop" data-field="emesis" style="margin-bottom: 10px;">
+                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        Êmese (vezes)
+                                    </div>
+                                    <div class="calculation-input-desktop">
+                                        <input type="text" id="emesis-input" class="form-control compact" placeholder="Ex: 2+1" tabindex="15" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('emesis')" style="height: 32px;">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('emesis')" style="height: 32px;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="calculation-total-desktop" id="emesis-total" style="font-size: 12px; margin-top: 3px;">Total: 0 vezes</div>
+                                    <input type="hidden" id="emesis" value="0">
                                 </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="diuresis-input" class="form-control compact" placeholder="Ex: 120+80" tabindex="13">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('diuresis')">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('diuresis')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="calculation-list-desktop" id="diuresis-list"></div>
-                                <div class="calculation-total-desktop" id="diuresis-total">Total: 0 ml</div>
-                                <input type="hidden" id="diuresis" value="0">
-                            </div>
 
-                            <div class="calculation-field-desktop" data-field="gastric-residue">
-                                <div class="calculation-label-desktop">
-                                    <i class="bi bi-circle-square"></i>
-                                    Resíduo Gástrico (ml)
+                                <div class="calculation-field-desktop" data-field="evacuations">
+                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                        <i class="bi bi-circle"></i>
+                                        Evacuação (vezes)
+                                    </div>
+                                    <div class="calculation-input-desktop">
+                                        <input type="text" id="evacuations-input" class="form-control compact" placeholder="Ex: 1+1" tabindex="16" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('evacuations')" style="height: 32px;">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('evacuations')" style="height: 32px;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="calculation-total-desktop" id="evacuations-total" style="font-size: 12px; margin-top: 3px;">Total: 0 vezes</div>
+                                    <input type="hidden" id="evacuations" value="0">
                                 </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="gastric-residue-input" class="form-control compact" placeholder="Ex: 30+20" tabindex="14">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('gastric-residue')">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('gastric-residue')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="calculation-list-desktop" id="gastric-residue-list"></div>
-                                <div class="calculation-total-desktop" id="gastric-residue-total">Total: 0 ml</div>
-                                <input type="hidden" id="gastric-residue" value="0">
-                            </div>
-
-                            <div class="calculation-field-desktop" data-field="emesis">
-                                <div class="calculation-label-desktop">
-                                    <i class="bi bi-exclamation-triangle"></i>
-                                    Êmese (vezes)
-                                </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="emesis-input" class="form-control compact" placeholder="Ex: 2+1" tabindex="15">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('emesis')">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('emesis')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="calculation-list-desktop" id="emesis-list"></div>
-                                <div class="calculation-total-desktop" id="emesis-total">Total: 0 vezes</div>
-                                <input type="hidden" id="emesis" value="0">
-                            </div>
-
-                            <div class="calculation-field-desktop" data-field="evacuations">
-                                <div class="calculation-label-desktop">
-                                    <i class="bi bi-circle"></i>
-                                    Evacuação (vezes)
-                                </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="evacuations-input" class="form-control compact" placeholder="Ex: 1+1" tabindex="16">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('evacuations')">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('evacuations')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="calculation-list-desktop" id="evacuations-list"></div>
-                                <div class="calculation-total-desktop" id="evacuations-total">Total: 0 vezes</div>
-                                <input type="hidden" id="evacuations" value="0">
                             </div>
                         </div>
                     </div>

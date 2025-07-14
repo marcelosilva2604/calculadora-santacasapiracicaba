@@ -162,17 +162,41 @@ body {
 /* Form grid for dense desktop layout */
 .desktop-form-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr auto;
   gap: var(--space-xl);
   max-width: none;
 }
 
-/* Dense measurements grid for wide screens */
+/* Vertical measurements layout */
 .measurements-desktop-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);  /* 6 measurements across */
+  display: flex;
+  flex-direction: column;
   gap: var(--space-lg);
   margin-bottom: var(--space-xl);
+}
+
+/* Force form-groups inside measurements to stack vertically */
+.measurements-desktop-grid .form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Keep input and button side by side, but stack the measurement fields vertically */
+.measurements-desktop-grid .input-group-desktop {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* Hydric Balance Section - Third Column */
+.hydric-balance-section-desktop {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-md);
+  background: white;
+  padding: var(--space-2xl);
+  min-height: 500px;
 }
 
 /* Values grid - inputs/outputs side by side */
@@ -189,7 +213,8 @@ body {
   }
   
   .measurements-desktop-grid {
-    grid-template-columns: repeat(3, 1fr); /* 3 measurements */
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -200,7 +225,8 @@ body {
   }
   
   .measurements-desktop-grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
   }
   
   .values-desktop-grid {
@@ -369,7 +395,7 @@ body {
   border-color: var(--gray-400);
 }
 
-.form-control:invalid {
+.form-control.is-invalid {
   border-color: var(--medical-danger);
   box-shadow: var(--focus-ring-danger);
 }

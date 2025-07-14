@@ -27,13 +27,7 @@ class UIManager {
             patientBed: document.getElementById('patientBed'),
             patientWeight: document.getElementById('patientWeight'),
             
-            // Medições
-            heartRate: document.getElementById('heartRate'),
-            respiratoryRate: document.getElementById('respiratoryRate'),
-            oxygenSaturation: document.getElementById('oxygenSaturation'),
-            temperature: document.getElementById('temperature'),
-            meanArterialPressure: document.getElementById('meanArterialPressure'),
-            capillaryGlycemia: document.getElementById('capillaryGlycemia'),
+            // Medições (removidas)
             
             // Campos de resultado
             result: {
@@ -42,13 +36,7 @@ class UIManager {
                 patientWeight: document.getElementById('patientWeightResult'),
                 timeframe: document.getElementById('timeframeResult'),
                 
-                // Medições resultado
-                heartRate: document.getElementById('heartRateResult'),
-                respiratoryRate: document.getElementById('respiratoryRateResult'),
-                oxygenSaturation: document.getElementById('oxygenSaturationResult'),
-                temperature: document.getElementById('temperatureResult'),
-                meanArterialPressure: document.getElementById('meanArterialPressureResult'),
-                capillaryGlycemia: document.getElementById('capillaryGlycemiaResult'),
+                // Medições resultado (removidas)
                 
                 // Entradas
                 diet: document.getElementById('dietResult'),
@@ -87,8 +75,7 @@ class UIManager {
         this.elements.result.patientWeight.textContent = formData.patientInfo.weight;
         this.elements.result.timeframe.textContent = data.patient.timeframe;
 
-        // Medições
-        this.displayMeasurements(data.measurements);
+        // Medições (removidas)
 
         // Entradas
         this.displayInputResults(data);
@@ -104,23 +91,8 @@ class UIManager {
     }
 
     /**
-     * Exibe as medições nos resultados
+     * Método removido - medições não são mais utilizadas
      */
-    displayMeasurements(measurements) {
-        const measurementMap = {
-            heartRate: { element: this.elements.result.heartRate, label: 'Frequência cardíaca', unit: 'bpm' },
-            respiratoryRate: { element: this.elements.result.respiratoryRate, label: 'Frequência respiratória', unit: 'irpm' },
-            oxygenSaturation: { element: this.elements.result.oxygenSaturation, label: 'Saturação de Oxigênio', unit: '%' },
-            temperature: { element: this.elements.result.temperature, label: 'Temperatura', unit: '°C' },
-            meanArterialPressure: { element: this.elements.result.meanArterialPressure, label: 'Pressão arterial média', unit: 'mmHg' },
-            capillaryGlycemia: { element: this.elements.result.capillaryGlycemia, label: 'Glicemia Capilar', unit: 'mg/dL' }
-        };
-
-        Object.entries(measurementMap).forEach(([key, config]) => {
-            const value = measurements[key] || 'N/A';
-            config.element.textContent = `${config.label}: ${value} ${config.unit}`;
-        });
-    }
 
     /**
      * Exibe os resultados das entradas
@@ -192,12 +164,7 @@ class UIManager {
         this.elements.patientBed.value = '';
         this.elements.patientWeight.value = '';
 
-        // Limpar medições
-        const measurementFields = [
-            this.elements.temperature, this.elements.heartRate, this.elements.respiratoryRate,
-            this.elements.oxygenSaturation, this.elements.meanArterialPressure, this.elements.capillaryGlycemia
-        ];
-        measurementFields.forEach(field => field.value = '');
+        // Medições removidas
 
         // Ocultar área de resultados
         this.elements.resultArea.style.display = 'none';
@@ -233,13 +200,6 @@ class UIManager {
             getValue(this.elements.result.patientName),
             `Leito: ${getValue(this.elements.result.patientBed)} / Peso: ${getValue(this.elements.result.patientWeight)} kg`,
             '',
-            'Medições:',
-            getValue(this.elements.result.heartRate),
-            getValue(this.elements.result.respiratoryRate),
-            getValue(this.elements.result.oxygenSaturation),
-            getValue(this.elements.result.temperature),
-            getValue(this.elements.result.meanArterialPressure),
-            getValue(this.elements.result.capillaryGlycemia),
             '',
             'Entradas:',
             `Dieta = ${getValue(this.elements.result.diet)} ml / ${getValue(this.elements.result.dietPerKg)} ml/kg`,

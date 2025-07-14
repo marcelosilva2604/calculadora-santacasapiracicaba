@@ -15,13 +15,19 @@ class FormHandler {
      */
     initializeCalculationFields() {
         const fieldConfigs = [
-            { fieldId: 'diet', inputId: 'dietInput', listId: 'dietList', totalId: 'dietTotal', addBtnId: 'addDietBtn', clearBtnId: 'clearDietBtn', unit: 'ml' },
-            { fieldId: 'serum', inputId: 'serumInput', listId: 'serumList', totalId: 'serumTotal', addBtnId: 'addSerumBtn', clearBtnId: 'clearSerumBtn', unit: 'ml' },
-            { fieldId: 'medication', inputId: 'medicationInput', listId: 'medicationList', totalId: 'medicationTotal', addBtnId: 'addMedicationBtn', clearBtnId: 'clearMedicationBtn', unit: 'ml' },
-            { fieldId: 'diuresis', inputId: 'diuresisInput', listId: 'diuresisList', totalId: 'diuresisTotal', addBtnId: 'addDiuresisBtn', clearBtnId: 'clearDiuresisBtn', unit: 'ml' },
-            { fieldId: 'gastricResidue', inputId: 'gastricResidueInput', listId: 'gastricResidueList', totalId: 'gastricResidueTotal', addBtnId: 'addGastricResidueBtn', clearBtnId: 'clearGastricResidueBtn', unit: 'ml' },
-            { fieldId: 'emesis', inputId: 'emesisInput', listId: 'emesisList', totalId: 'emesisTotal', addBtnId: 'addEmesisBtn', clearBtnId: 'clearEmesisBtn', unit: 'vezes' },
-            { fieldId: 'evacuations', inputId: 'evacuationsInput', listId: 'evacuationsList', totalId: 'evacuationsTotal', addBtnId: 'addEvacuationsBtn', clearBtnId: 'clearEvacuationsBtn', unit: 'vezes' }
+            { fieldId: 'heart-rate', inputId: 'heart-rate-input', listId: 'heart-rate-list', totalId: 'heart-rate-total', unit: 'bpm' },
+            { fieldId: 'respiratory-rate', inputId: 'respiratory-rate-input', listId: 'respiratory-rate-list', totalId: 'respiratory-rate-total', unit: 'irpm' },
+            { fieldId: 'oxygen-saturation', inputId: 'oxygen-saturation-input', listId: 'oxygen-saturation-list', totalId: 'oxygen-saturation-total', unit: '%' },
+            { fieldId: 'temperature', inputId: 'temperature-input', listId: 'temperature-list', totalId: 'temperature-total', unit: '°C' },
+            { fieldId: 'mean-arterial-pressure', inputId: 'mean-arterial-pressure-input', listId: 'mean-arterial-pressure-list', totalId: 'mean-arterial-pressure-total', unit: 'mmHg' },
+            { fieldId: 'blood-glucose', inputId: 'blood-glucose-input', listId: 'blood-glucose-list', totalId: 'blood-glucose-total', unit: 'mg/dL' },
+            { fieldId: 'diet', inputId: 'diet-input', listId: 'diet-list', totalId: 'diet-total', unit: 'ml' },
+            { fieldId: 'serum', inputId: 'serum-input', listId: 'serum-list', totalId: 'serum-total', unit: 'ml' },
+            { fieldId: 'medication', inputId: 'medication-input', listId: 'medication-list', totalId: 'medication-total', unit: 'ml' },
+            { fieldId: 'diuresis', inputId: 'diuresis-input', listId: 'diuresis-list', totalId: 'diuresis-total', unit: 'ml' },
+            { fieldId: 'gastric-residue', inputId: 'gastric-residue-input', listId: 'gastric-residue-list', totalId: 'gastric-residue-total', unit: 'ml' },
+            { fieldId: 'emesis', inputId: 'emesis-input', listId: 'emesis-list', totalId: 'emesis-total', unit: 'vezes' },
+            { fieldId: 'evacuations', inputId: 'evacuations-input', listId: 'evacuations-list', totalId: 'evacuations-total', unit: 'vezes' }
         ];
 
         fieldConfigs.forEach(config => {
@@ -44,7 +50,7 @@ class FormHandler {
         return {
             timeframe: document.querySelector('input[name="timeframe"]:checked')?.value || '24',
             patientInfo: this.collectPatientInfo(),
-            measurements: this.collectMeasurements(),
+            vitalSigns: this.collectVitalSigns(),
             inputs: this.collectInputValues(),
             outputs: this.collectOutputValues()
         };
@@ -55,27 +61,31 @@ class FormHandler {
      */
     collectPatientInfo() {
         return {
-            name: document.getElementById('patientName')?.value || '',
-            bed: document.getElementById('patientBed')?.value || '',
-            weight: parseFloat(document.getElementById('patientWeight')?.value) || 0
+            name: document.getElementById('patient-name')?.value || '',
+            bed: document.getElementById('patient-bed')?.value || '',
+            weight: parseFloat(document.getElementById('patient-weight')?.value) || 0
         };
     }
 
     /**
-     * Coleta todas as medições
+     * Coleta sinais vitais
+     */
+    collectVitalSigns() {
+        return {
+            heartRate: parseFloat(document.getElementById('heart-rate')?.value) || 0,
+            respiratoryRate: parseFloat(document.getElementById('respiratory-rate')?.value) || 0,
+            oxygenSaturation: parseFloat(document.getElementById('oxygen-saturation')?.value) || 0,
+            temperature: parseFloat(document.getElementById('temperature')?.value) || 0,
+            meanArterialPressure: parseFloat(document.getElementById('mean-arterial-pressure')?.value) || 0,
+            bloodGlucose: parseFloat(document.getElementById('blood-glucose')?.value) || 0
+        };
+    }
+
+    /**
+     * Coleta todas as medições (removidas)
      */
     collectMeasurements() {
-        const measurementFields = [
-            'heartRate', 'respiratoryRate', 'oxygenSaturation', 
-            'temperature', 'meanArterialPressure', 'capillaryGlycemia'
-        ];
-
-        const measurements = {};
-        measurementFields.forEach(field => {
-            measurements[field] = document.getElementById(field)?.value || '';
-        });
-
-        return measurements;
+        return {};
     }
 
     /**
@@ -110,7 +120,7 @@ class FormHandler {
             return {
                 isValid: false,
                 message: 'Por favor, informe o peso do paciente para calcular o balanço hídrico.',
-                focusElement: 'patientWeight'
+                focusElement: 'patient-weight'
             };
         }
 
@@ -270,6 +280,18 @@ class CalculationField {
     }
 
     /**
+     * Verifica se é um campo de sinais vitais que precisa de média
+     */
+    isVitalSignField() {
+        return this.config.unit === 'bpm' || 
+               this.config.unit === 'irpm' || 
+               this.config.unit === '%' || 
+               this.config.unit === '°C' || 
+               this.config.unit === 'mmHg' || 
+               this.config.unit === 'mg/dL';
+    }
+
+    /**
      * Atualiza a interface do campo
      */
     updateUI() {
@@ -286,15 +308,30 @@ class CalculationField {
             total += item.value;
         });
 
-        // Atualizar total
-        const formattedTotal = this.isCountField() 
-            ? Math.round(total).toString()
-            : total.toFixed(1);
+        // Atualizar total ou média
+        let displayValue;
+        let displayText;
         
-        this.elements.totalElement.textContent = formattedTotal;
+        if (this.isVitalSignField() && this.values.length > 0) {
+            // Para sinais vitais, calcular e exibir média
+            const average = total / this.values.length;
+            displayValue = average;
+            displayText = `Média: ${Math.round(average)} ${this.config.unit}`;
+        } else {
+            // Para outros campos, exibir total
+            displayValue = total;
+            const formattedTotal = this.isCountField() 
+                ? Math.round(total).toString()
+                : total.toFixed(1);
+            displayText = `Total: ${formattedTotal} ${this.config.unit}`;
+        }
         
-        // Atualizar campo oculto
-        this.elements.hiddenField.value = total;
+        this.elements.totalElement.textContent = displayText;
+        
+        // Atualizar campo oculto (usar média para sinais vitais, total para outros)
+        this.elements.hiddenField.value = this.isVitalSignField() && this.values.length > 0 
+            ? Math.round(total / this.values.length) 
+            : total;
     }
 
     /**
