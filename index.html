@@ -162,123 +162,117 @@
                         </div>
 
                         <!-- Vital Signs Section -->
-                        <div style="margin-top: 25px;">
-                            <h3 class="section-subtitle" style="margin-bottom: 15px;">
+                        <div style="margin-top: 15px;">
+                            <h3 class="section-subtitle" style="margin-bottom: 8px; font-size: 14px;">
                                 <i class="bi bi-heart-pulse"></i>
                                 Sinais Vitais
                             </h3>
 
                             <!-- Heart Rate Section -->
-                            <div class="calculation-field-desktop" data-field="heart-rate">
-                                <div class="calculation-label-desktop">
+                            <div class="calculation-field-desktop" data-field="heart-rate" style="margin-bottom: 6px;">
+                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
                                     <i class="bi bi-heart"></i>
-                                    Frequência Cardíaca (bpm)
+                                    FC (bpm)
                                 </div>
                                 <div class="calculation-input-desktop">
-                                    <input type="text" id="heart-rate-input" class="form-control compact" placeholder="Ex: 80+75" tabindex="4">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('heart-rate')">
+                                    <input type="text" id="heart-rate-input" class="form-control compact" placeholder="Ex: 80+75" tabindex="4" style="height: 28px; font-size: 12px;">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('heart-rate')" style="height: 28px;">
                                         <i class="bi bi-plus"></i>
                                     </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('heart-rate')">
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('heart-rate')" style="height: 28px;">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
-                                <div class="calculation-list-desktop" id="heart-rate-list"></div>
                                 <input type="hidden" id="heart-rate" value="0">
                             </div>
 
                             <!-- Respiratory Rate Section -->
-                            <div class="calculation-field-desktop" data-field="respiratory-rate" style="margin-top: 20px;">
-                                <div class="calculation-label-desktop">
+                            <div class="calculation-field-desktop" data-field="respiratory-rate" style="margin-bottom: 6px;">
+                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
                                     <i class="bi bi-wind"></i>
-                                    Frequência Respiratória (irpm)
+                                    FR (irpm)
                                 </div>
                                 <div class="calculation-input-desktop">
-                                    <input type="text" id="respiratory-rate-input" class="form-control compact" placeholder="Ex: 18+20" tabindex="5">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('respiratory-rate')">
+                                    <input type="text" id="respiratory-rate-input" class="form-control compact" placeholder="Ex: 18+20" tabindex="5" style="height: 28px; font-size: 12px;">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('respiratory-rate')" style="height: 28px;">
                                         <i class="bi bi-plus"></i>
                                     </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('respiratory-rate')">
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('respiratory-rate')" style="height: 28px;">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
-                                <div class="calculation-list-desktop" id="respiratory-rate-list"></div>
                                 <input type="hidden" id="respiratory-rate" value="0">
                             </div>
 
                             <!-- Oxygen Saturation Section -->
-                            <div class="calculation-field-desktop" data-field="oxygen-saturation" style="margin-top: 20px;">
-                                <div class="calculation-label-desktop">
+                            <div class="calculation-field-desktop" data-field="oxygen-saturation" style="margin-bottom: 6px;">
+                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
                                     <i class="bi bi-heart-pulse-fill"></i>
                                     SatO₂ (%)
                                 </div>
                                 <div class="calculation-input-desktop">
-                                    <input type="text" id="oxygen-saturation-input" class="form-control compact" placeholder="Ex: 98+97" tabindex="6">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('oxygen-saturation')">
+                                    <input type="text" id="oxygen-saturation-input" class="form-control compact" placeholder="Ex: 98+97" tabindex="6" style="height: 28px; font-size: 12px;">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('oxygen-saturation')" style="height: 28px;">
                                         <i class="bi bi-plus"></i>
                                     </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('oxygen-saturation')">
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('oxygen-saturation')" style="height: 28px;">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
-                                <div class="calculation-list-desktop" id="oxygen-saturation-list"></div>
                                 <input type="hidden" id="oxygen-saturation" value="0">
                             </div>
 
                             <!-- Temperature Section -->
-                            <div class="calculation-field-desktop" data-field="temperature" style="margin-top: 20px;">
-                                <div class="calculation-label-desktop">
+                            <div class="calculation-field-desktop" data-field="temperature" style="margin-bottom: 6px;">
+                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
                                     <i class="bi bi-thermometer-half"></i>
-                                    Temperatura (°C)
+                                    Temp (°C)
                                 </div>
                                 <div class="calculation-input-desktop">
-                                    <input type="text" id="temperature-input" class="form-control compact" placeholder="Ex: 36.5+37.8" tabindex="7">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('temperature')">
+                                    <input type="text" id="temperature-input" class="form-control compact" placeholder="Ex: 36.5+37" tabindex="7" style="height: 28px; font-size: 12px;">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('temperature')" style="height: 28px;">
                                         <i class="bi bi-plus"></i>
                                     </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('temperature')">
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('temperature')" style="height: 28px;">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
-                                <div class="calculation-list-desktop" id="temperature-list"></div>
                                 <input type="hidden" id="temperature" value="0">
                             </div>
 
                             <!-- Mean Arterial Pressure Section -->
-                            <div class="calculation-field-desktop" data-field="mean-arterial-pressure" style="margin-top: 20px;">
-                                <div class="calculation-label-desktop">
+                            <div class="calculation-field-desktop" data-field="mean-arterial-pressure" style="margin-bottom: 6px;">
+                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
                                     <i class="bi bi-activity"></i>
                                     PAM (mmHg)
                                 </div>
                                 <div class="calculation-input-desktop">
-                                    <input type="text" id="mean-arterial-pressure-input" class="form-control compact" placeholder="Ex: 80+85" tabindex="8">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('mean-arterial-pressure')">
+                                    <input type="text" id="mean-arterial-pressure-input" class="form-control compact" placeholder="Ex: 80+85" tabindex="8" style="height: 28px; font-size: 12px;">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('mean-arterial-pressure')" style="height: 28px;">
                                         <i class="bi bi-plus"></i>
                                     </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('mean-arterial-pressure')">
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('mean-arterial-pressure')" style="height: 28px;">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
-                                <div class="calculation-list-desktop" id="mean-arterial-pressure-list"></div>
                                 <input type="hidden" id="mean-arterial-pressure" value="0">
                             </div>
 
                             <!-- Blood Glucose Section -->
-                            <div class="calculation-field-desktop" data-field="blood-glucose" style="margin-top: 20px;">
-                                <div class="calculation-label-desktop">
+                            <div class="calculation-field-desktop" data-field="blood-glucose">
+                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
                                     <i class="bi bi-droplet"></i>
                                     Glicemia (mg/dL)
                                 </div>
                                 <div class="calculation-input-desktop">
-                                    <input type="text" id="blood-glucose-input" class="form-control compact" placeholder="Ex: 90+85" tabindex="9">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('blood-glucose')">
+                                    <input type="text" id="blood-glucose-input" class="form-control compact" placeholder="Ex: 90+85" tabindex="9" style="height: 28px; font-size: 12px;">
+                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('blood-glucose')" style="height: 28px;">
                                         <i class="bi bi-plus"></i>
                                     </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('blood-glucose')">
+                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('blood-glucose')" style="height: 28px;">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
-                                <div class="calculation-list-desktop" id="blood-glucose-list"></div>
                                 <input type="hidden" id="blood-glucose" value="0">
                             </div>
                         </div>
