@@ -299,23 +299,24 @@ class HealthcareInterface {
             // Show loading state
             const button = document.getElementById('calculate-button');
             const originalText = button.innerHTML;
-            button.innerHTML = '<i class="bi bi-arrow-clockwise spin"></i> Calculando...';
+            button.innerHTML = '<i class="bi bi-arrow-clockwise spin"></i> Gerando relatório...';
             button.disabled = true;
 
-            // Validate form
-            if (!this.validateAllSections()) {
+            // Validar dados mínimos para o relatório
+            const patientName = document.getElementById('patient-name')?.value;
+            if (!patientName || patientName.trim() === '') {
+                this.showToast('Por favor, informe o nome do paciente.', 'error');
                 button.innerHTML = originalText;
                 button.disabled = false;
                 return;
             }
 
-            // Perform calculation
-            if (window.hydricBalanceApp) {
-                await window.hydricBalanceApp.handleCalculation();
-                this.showResults();
-                this.announceChange('Cálculo concluído. Resultados exibidos.');
+            // Gerar e exibir relatório
+            if (window.reportGenerator) {
+                window.reportGenerator.showReport();
+                this.announceChange('Relatório gerado com sucesso.');
             } else {
-                throw new Error('Sistema de cálculo não disponível');
+                throw new Error('Gerador de relatório não disponível');
             }
 
             // Restore button
@@ -323,12 +324,12 @@ class HealthcareInterface {
             button.disabled = false;
 
         } catch (error) {
-            console.error('Erro no cálculo:', error);
-            this.showToast('Erro ao calcular balanço hídrico. Tente novamente.', 'error');
+            console.error('Erro ao gerar relatório:', error);
+            this.showToast('Erro ao gerar relatório. Tente novamente.', 'error');
             
             // Restore button
             const button = document.getElementById('calculate-button');
-            button.innerHTML = '<i class="bi bi-calculator"></i> Calcular Balanço Hídrico';
+            button.innerHTML = '<i class="bi bi-calculator"></i> Calcular Balanço';
             button.disabled = false;
         }
     }

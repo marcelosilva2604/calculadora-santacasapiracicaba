@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste - Sinais Vitais</title>
+</head>
+<body>
+    <h1>Teste do Parser de Sinais Vitais</h1>
+    
+    <script>
+        // Copiar a função parseVitalSignInput para teste
+        function parseVitalSignInput(input) {
+            const cleanInput = input.trim();
+            
+            // Verifica se é um range (formato: min-max)
+            if (cleanInput.includes('-') && !cleanInput.includes(' ')) {
+                const rangeParts = cleanInput.split('-');
+                if (rangeParts.length === 2) {
+                    const min = parseFloat(rangeParts[0]);
+                    const max = parseFloat(rangeParts[1]);
+                    if (!isNaN(min) && !isNaN(max)) {
+                        return {
+                            type: 'range',
+                            values: [min, max],
+                            displayText: `${min}-${max}`,
+                            statisticalValue: (min + max) / 2 // Média do range
+                        };
+                    }
+                }
+            }
+            
+            // Verifica se são múltiplos valores (formato: val1-val2-val3 ou val1 val2 val3)
+            const separator = cleanInput.includes('-') ? '-' : ' ';
+            const values = cleanInput.split(separator)
+                .map(val => parseFloat(val.trim()))
+                .filter(val => !isNaN(val));
+            
+            if (values.length > 1) {
+                return {
+                    type: 'multiple',
+                    values: values,
+                    displayText: values.join('-'),
+                    statisticalValue: values.reduce((sum, val) => sum + val, 0) / values.length // Média dos valores
+                };
+            }
+            
+            // Valor único
+            const singleValue = parseFloat(cleanInput);
+            if (!isNaN(singleValue)) {
+                return {
+                    type: 'single',
+                    values: [singleValue],
+                    displayText: singleValue.toString(),
+                    statisticalValue: singleValue
+                };
+            }
+            
+            return null;
+        }
+        
+        // Testes
+        console.log('=== TESTES DO PARSER DE SINAIS VITAIS ===');
+        
+        // Teste 1: Range FC
+        const test1 = parseVitalSignInput('65-89');
+        console.log('Teste 1 (FC range 65-89):', test1);
+        
+        // Teste 2: Range Temperatura
+        const test2 = parseVitalSignInput('36.2-37.1');
+        console.log('Teste 2 (Temp range 36.2-37.1):', test2);
+        
+        // Teste 3: Múltiplos valores PAM
+        const test3 = parseVitalSignInput('80-85-90-78-92');
+        console.log('Teste 3 (PAM múltiplos 80-85-90-78-92):', test3);
+        
+        // Teste 4: Múltiplos valores Glicemia
+        const test4 = parseVitalSignInput('65-134-87-98-78');
+        console.log('Teste 4 (Glicemia múltiplos 65-134-87-98-78):', test4);
+        
+        // Teste 5: Valor único
+        const test5 = parseVitalSignInput('98');
+        console.log('Teste 5 (Valor único 98):', test5);
+        
+        // Teste 6: Entrada inválida
+        const test6 = parseVitalSignInput('abc');
+        console.log('Teste 6 (Entrada inválida abc):', test6);
+        
+        document.body.innerHTML += '<p>Veja o console para os resultados dos testes.</p>';
+    </script>
+</body>
+</html>
