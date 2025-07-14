@@ -214,6 +214,28 @@ class CalculationField {
         if (!expression) return;
 
         try {
+            // Para sinais vitais, usar o parser especial
+            if (this.isVitalSignField()) {
+                const vitalSignData = this.parseVitalSignInput(expression);
+                if (vitalSignData) {
+                    this.values.push({
+                        expression: vitalSignData.displayText,
+                        value: vitalSignData.statisticalValue,
+                        type: vitalSignData.type,
+                        rawValues: vitalSignData.values
+                    });
+                    
+                    // Atualizar interface
+                    this.updateUI();
+                    
+                    // Limpar campo e focar
+                    this.elements.inputField.value = '';
+                    this.elements.inputField.focus();
+                    return;
+                }
+            }
+            
+            // Para outros campos, usar o parser matemático normal
             const result = this.evaluateExpression(expression);
             
             if (isNaN(result)) {
@@ -239,8 +261,8 @@ class CalculationField {
             this.elements.inputField.focus();
 
         } catch (error) {
-            alert('Expressão inválida. Por favor, verifique e tente novamente.');
-            console.error('Erro ao avaliar expressão:', error);
+            alert('Entrada inválida. Por favor, verifique e tente novamente.');
+            console.error('Erro ao processar entrada:', error);
         }
     }
 
@@ -280,7 +302,7 @@ class CalculationField {
     }
 
     /**
-     * Verifica se é um campo de sinais vitais que precisa de média
+     * Verifica se é um campo de sinais vitais que precisa de formatação especial
      */
     isVitalSignField() {
         return this.config.unit === 'bpm' || 
@@ -289,6 +311,58 @@ class CalculationField {
                this.config.unit === '°C' || 
                this.config.unit === 'mmHg' || 
                this.config.unit === 'mg/dL';
+    }
+
+    /**
+     * Processa entrada de sinais vitais com suporte a ranges e múltiplos valores
+     */
+    parseVitalSignInput(input) {
+        const cleanInput = input.trim();
+        
+        // Verifica se é um range (formato: min-max)
+        if (cleanInput.includes('-') && !cleanInput.includes(' ')) {
+            const rangeParts = cleanInput.split('-');
+            if (rangeParts.length === 2) {
+                const min = parseFloat(rangeParts[0]);
+                const max = parseFloat(rangeParts[1]);
+                if (!isNaN(min) && !isNaN(max)) {
+                    return {
+                        type: 'range',
+                        values: [min, max],
+                        displayText: `${min}-${max}`,
+                        statisticalValue: (min + max) / 2 // Média do range
+                    };
+                }
+            }
+        }
+        
+        // Verifica se são múltiplos valores (formato: val1-val2-val3 ou val1 val2 val3)
+        const separator = cleanInput.includes('-') ? '-' : ' ';
+        const values = cleanInput.split(separator)
+            .map(val => parseFloat(val.trim()))
+            .filter(val => !isNaN(val));
+        
+        if (values.length > 1) {
+            return {
+                type: 'multiple',
+                values: values,
+                displayText: values.join('-'),
+                statisticalValue: values.reduce((sum, val) => sum + val, 0) / values.length // Média dos valores
+            };
+        }
+        
+        // Valor único
+        const singleValue = parseFloat(cleanInput);
+        if (!isNaN(singleValue)) {
+            return {
+                type: 'single',
+                values: [singleValue],
+                displayText: singleValue.toString(),
+                statisticalValue: singleValue
+            };
+        }
+        
+        return null;
     }
 
     /**
@@ -313,10 +387,19 @@ class CalculationField {
         let displayText;
         
         if (this.isVitalSignField() && this.values.length > 0) {
-            // Para sinais vitais, calcular e exibir média
+            // Para sinais vitais, exibir informações específicas
             const average = total / this.values.length;
             displayValue = average;
-            displayText = `Média: ${Math.round(average)} ${this.config.unit}`;
+            
+            // Determinar tipo de display baseado no conteúdo
+            const hasRanges = this.values.some(item => item.type === 'range');
+            const hasMultiple = this.values.some(item => item.type === 'multiple');
+            
+            if (hasRanges || hasMultiple) {
+                displayText = `Média: ${Math.round(average)} ${this.config.unit}`;
+            } else {
+                displayText = `Média: ${Math.round(average)} ${this.config.unit}`;
+            }
         } else {
             // Para outros campos, exibir total
             displayValue = total;
