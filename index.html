@@ -169,111 +169,57 @@
                             </h3>
 
                             <!-- Heart Rate Section -->
-                            <div class="calculation-field-desktop" data-field="heart-rate" style="margin-bottom: 6px;">
-                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
+                            <div class="form-group" style="margin-bottom: 8px;">
+                                <label for="heart-rate" class="form-label" style="font-size: 12px; margin-bottom: 2px;">
                                     <i class="bi bi-heart"></i>
-                                    Frequência Cardíaca (bpm) - Min/Max
-                                </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="heart-rate-input" class="form-control compact" placeholder="Ex: 65-89 ou 128-175" tabindex="4" style="height: 28px; font-size: 12px;">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('heart-rate')" style="height: 28px;">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('heart-rate')" style="height: 28px;">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <input type="hidden" id="heart-rate" value="0">
+                                    Frequência Cardíaca (bpm)
+                                </label>
+                                <input type="text" id="heart-rate" class="form-control compact" placeholder="Ex: 65-89, 128-175, 80" tabindex="4" style="height: 28px; font-size: 12px;">
                             </div>
 
                             <!-- Respiratory Rate Section -->
-                            <div class="calculation-field-desktop" data-field="respiratory-rate" style="margin-bottom: 6px;">
-                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
+                            <div class="form-group" style="margin-bottom: 8px;">
+                                <label for="respiratory-rate" class="form-label" style="font-size: 12px; margin-bottom: 2px;">
                                     <i class="bi bi-wind"></i>
-                                    Frequência Respiratória (irpm) - Min/Max
-                                </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="respiratory-rate-input" class="form-control compact" placeholder="Ex: 16-24 ou 18-20" tabindex="5" style="height: 28px; font-size: 12px;">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('respiratory-rate')" style="height: 28px;">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('respiratory-rate')" style="height: 28px;">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <input type="hidden" id="respiratory-rate" value="0">
+                                    Frequência Respiratória (irpm)
+                                </label>
+                                <input type="text" id="respiratory-rate" class="form-control compact" placeholder="Ex: 16-24, 18-20, 20" tabindex="5" style="height: 28px; font-size: 12px;">
                             </div>
 
                             <!-- Oxygen Saturation Section -->
-                            <div class="calculation-field-desktop" data-field="oxygen-saturation" style="margin-bottom: 6px;">
-                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
+                            <div class="form-group" style="margin-bottom: 8px;">
+                                <label for="oxygen-saturation" class="form-label" style="font-size: 12px; margin-bottom: 2px;">
                                     <i class="bi bi-heart-pulse-fill"></i>
-                                    SatO₂ (%) - Min/Max
-                                </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="oxygen-saturation-input" class="form-control compact" placeholder="Ex: 94-98 ou 96-99" tabindex="6" style="height: 28px; font-size: 12px;">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('oxygen-saturation')" style="height: 28px;">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('oxygen-saturation')" style="height: 28px;">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <input type="hidden" id="oxygen-saturation" value="0">
+                                    SatO₂ (%)
+                                </label>
+                                <input type="text" id="oxygen-saturation" class="form-control compact" placeholder="Ex: 94-98, 96-99, 97" tabindex="6" style="height: 28px; font-size: 12px;">
                             </div>
 
                             <!-- Temperature Section -->
-                            <div class="calculation-field-desktop" data-field="temperature" style="margin-bottom: 6px;">
-                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
+                            <div class="form-group" style="margin-bottom: 8px;">
+                                <label for="temperature" class="form-label" style="font-size: 12px; margin-bottom: 2px;">
                                     <i class="bi bi-thermometer-half"></i>
-                                    Temperatura (°C) - Min/Max
-                                </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="temperature-input" class="form-control compact" placeholder="Ex: 36.2-37.1 ou 36.5-37.8" tabindex="7" style="height: 28px; font-size: 12px;">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('temperature')" style="height: 28px;">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('temperature')" style="height: 28px;">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <input type="hidden" id="temperature" value="0">
+                                    Temperatura (°C)
+                                </label>
+                                <input type="text" id="temperature" class="form-control compact" placeholder="Ex: 36.2-37.1, 36.5" tabindex="7" style="height: 28px; font-size: 12px;">
                             </div>
 
                             <!-- Mean Arterial Pressure Section -->
-                            <div class="calculation-field-desktop" data-field="mean-arterial-pressure" style="margin-bottom: 6px;">
-                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
+                            <div class="form-group" style="margin-bottom: 8px;">
+                                <label for="mean-arterial-pressure" class="form-label" style="font-size: 12px; margin-bottom: 2px;">
                                     <i class="bi bi-activity"></i>
-                                    PAM (mmHg) - Todas as aferições
-                                </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="mean-arterial-pressure-input" class="form-control compact" placeholder="Ex: 80-85-90-78-92" tabindex="8" style="height: 28px; font-size: 12px;">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('mean-arterial-pressure')" style="height: 28px;">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('mean-arterial-pressure')" style="height: 28px;">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <input type="hidden" id="mean-arterial-pressure" value="0">
+                                    PAM (mmHg)
+                                </label>
+                                <input type="text" id="mean-arterial-pressure" class="form-control compact" placeholder="Ex: 80-85-90-78-92" tabindex="8" style="height: 28px; font-size: 12px;">
                             </div>
 
                             <!-- Blood Glucose Section -->
-                            <div class="calculation-field-desktop" data-field="blood-glucose">
-                                <div class="calculation-label-desktop" style="font-size: 11px; margin-bottom: 2px;">
+                            <div class="form-group" style="margin-bottom: 8px;">
+                                <label for="blood-glucose" class="form-label" style="font-size: 12px; margin-bottom: 2px;">
                                     <i class="bi bi-droplet"></i>
-                                    Glicemia (mg/dL) - Todas as aferições
-                                </div>
-                                <div class="calculation-input-desktop">
-                                    <input type="text" id="blood-glucose-input" class="form-control compact" placeholder="Ex: 65-134-87-98-78" tabindex="9" style="height: 28px; font-size: 12px;">
-                                    <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('blood-glucose')" style="height: 28px;">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                    <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('blood-glucose')" style="height: 28px;">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                                <input type="hidden" id="blood-glucose" value="0">
+                                    Glicemia (mg/dL)
+                                </label>
+                                <input type="text" id="blood-glucose" class="form-control compact" placeholder="Ex: 65-134-87-98-78" tabindex="9" style="height: 28px; font-size: 12px;">
                             </div>
                         </div>
 
@@ -297,57 +243,51 @@
                                     Entradas
                                 </h3>
                                 
-                                <div class="calculation-field-desktop" data-field="diet" style="margin-bottom: 10px;">
-                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                <div class="hydric-field" data-field="diet" style="margin-bottom: 10px;">
+                                    <div class="hydric-label" style="font-size: 12px; margin-bottom: 3px;">
                                         <i class="bi bi-cup-straw"></i>
                                         Dieta (ml)
                                     </div>
-                                    <div class="calculation-input-desktop">
-                                        <input type="text" id="diet-input" class="form-control compact" placeholder="Ex: 150+50" tabindex="10" style="height: 32px;">
-                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('diet')" style="height: 32px;">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('diet')" style="height: 32px;">
+                                    <div class="hydric-input-container">
+                                        <input type="text" id="diet-input" class="form-control compact hydric-input" placeholder="Ex: 150, 1.5*24, 50+30" tabindex="10" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact danger" onclick="window.hydricAccumulator.clearField('diet')" style="height: 32px;" title="Limpar tudo">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
-                                    <div class="calculation-total-desktop" id="diet-total" style="font-size: 12px; margin-top: 3px;">Total: 0 ml</div>
+                                    <div class="hydric-total" id="diet-total" style="font-size: 12px; margin-top: 3px; font-weight: 600;">Total: 0 ml</div>
+                                    <div class="hydric-history" id="diet-history" style="display: none; margin-top: 5px;"></div>
                                     <input type="hidden" id="diet" value="0">
                                 </div>
 
-                                <div class="calculation-field-desktop" data-field="serum" style="margin-bottom: 10px;">
-                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                <div class="hydric-field" data-field="serum" style="margin-bottom: 10px;">
+                                    <div class="hydric-label" style="font-size: 12px; margin-bottom: 3px;">
                                         <i class="bi bi-droplet-fill"></i>
                                         Soro (ml)
                                     </div>
-                                    <div class="calculation-input-desktop">
-                                        <input type="text" id="serum-input" class="form-control compact" placeholder="Ex: 500+200" tabindex="11" style="height: 32px;">
-                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('serum')" style="height: 32px;">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('serum')" style="height: 32px;">
+                                    <div class="hydric-input-container">
+                                        <input type="text" id="serum-input" class="form-control compact hydric-input" placeholder="Ex: 500, 20*24, 300+200" tabindex="11" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact danger" onclick="window.hydricAccumulator.clearField('serum')" style="height: 32px;" title="Limpar tudo">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
-                                    <div class="calculation-total-desktop" id="serum-total" style="font-size: 12px; margin-top: 3px;">Total: 0 ml</div>
+                                    <div class="hydric-total" id="serum-total" style="font-size: 12px; margin-top: 3px; font-weight: 600;">Total: 0 ml</div>
+                                    <div class="hydric-history" id="serum-history" style="display: none; margin-top: 5px;"></div>
                                     <input type="hidden" id="serum" value="0">
                                 </div>
 
-                                <div class="calculation-field-desktop" data-field="medication">
-                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                <div class="hydric-field" data-field="medication">
+                                    <div class="hydric-label" style="font-size: 12px; margin-bottom: 3px;">
                                         <i class="bi bi-prescription2"></i>
                                         Medicação (ml)
                                     </div>
-                                    <div class="calculation-input-desktop">
-                                        <input type="text" id="medication-input" class="form-control compact" placeholder="Ex: 10+5" tabindex="12" style="height: 32px;">
-                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('medication')" style="height: 32px;">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('medication')" style="height: 32px;">
+                                    <div class="hydric-input-container">
+                                        <input type="text" id="medication-input" class="form-control compact hydric-input" placeholder="Ex: 10, 2*12, 5+3" tabindex="12" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact danger" onclick="window.hydricAccumulator.clearField('medication')" style="height: 32px;" title="Limpar tudo">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
-                                    <div class="calculation-total-desktop" id="medication-total" style="font-size: 12px; margin-top: 3px;">Total: 0 ml</div>
+                                    <div class="hydric-total" id="medication-total" style="font-size: 12px; margin-top: 3px; font-weight: 600;">Total: 0 ml</div>
+                                    <div class="hydric-history" id="medication-history" style="display: none; margin-top: 5px;"></div>
                                     <input type="hidden" id="medication" value="0">
                                 </div>
                             </div>
@@ -359,75 +299,67 @@
                                     Saídas
                                 </h3>
                                 
-                                <div class="calculation-field-desktop" data-field="diuresis" style="margin-bottom: 10px;">
-                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                <div class="hydric-field" data-field="diuresis" style="margin-bottom: 10px;">
+                                    <div class="hydric-label" style="font-size: 12px; margin-bottom: 3px;">
                                         <i class="bi bi-droplet"></i>
                                         Diurese (ml)
                                     </div>
-                                    <div class="calculation-input-desktop">
-                                        <input type="text" id="diuresis-input" class="form-control compact" placeholder="Ex: 120+80" tabindex="13" style="height: 32px;">
-                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('diuresis')" style="height: 32px;">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('diuresis')" style="height: 32px;">
+                                    <div class="hydric-input-container">
+                                        <input type="text" id="diuresis-input" class="form-control compact hydric-input" placeholder="Ex: 120, 5*24, 80+40" tabindex="13" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact danger" onclick="window.hydricAccumulator.clearField('diuresis')" style="height: 32px;" title="Limpar tudo">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
-                                    <div class="calculation-total-desktop" id="diuresis-total" style="font-size: 12px; margin-top: 3px;">Total: 0 ml</div>
+                                    <div class="hydric-total" id="diuresis-total" style="font-size: 12px; margin-top: 3px; font-weight: 600;">Total: 0 ml</div>
+                                    <div class="hydric-history" id="diuresis-history" style="display: none; margin-top: 5px;"></div>
                                     <input type="hidden" id="diuresis" value="0">
                                 </div>
 
-                                <div class="calculation-field-desktop" data-field="gastric-residue" style="margin-bottom: 10px;">
-                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                <div class="hydric-field" data-field="gastric-residue" style="margin-bottom: 10px;">
+                                    <div class="hydric-label" style="font-size: 12px; margin-bottom: 3px;">
                                         <i class="bi bi-circle-square"></i>
                                         Resíduo Gástrico (ml)
                                     </div>
-                                    <div class="calculation-input-desktop">
-                                        <input type="text" id="gastric-residue-input" class="form-control compact" placeholder="Ex: 30+20" tabindex="14" style="height: 32px;">
-                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('gastric-residue')" style="height: 32px;">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('gastric-residue')" style="height: 32px;">
+                                    <div class="hydric-input-container">
+                                        <input type="text" id="gastric-residue-input" class="form-control compact hydric-input" placeholder="Ex: 30, 2*12, 20+10" tabindex="14" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact danger" onclick="window.hydricAccumulator.clearField('gastric-residue')" style="height: 32px;" title="Limpar tudo">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
-                                    <div class="calculation-total-desktop" id="gastric-residue-total" style="font-size: 12px; margin-top: 3px;">Total: 0 ml</div>
+                                    <div class="hydric-total" id="gastric-residue-total" style="font-size: 12px; margin-top: 3px; font-weight: 600;">Total: 0 ml</div>
+                                    <div class="hydric-history" id="gastric-residue-history" style="display: none; margin-top: 5px;"></div>
                                     <input type="hidden" id="gastric-residue" value="0">
                                 </div>
 
-                                <div class="calculation-field-desktop" data-field="emesis" style="margin-bottom: 10px;">
-                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                <div class="hydric-field" data-field="emesis" style="margin-bottom: 10px;">
+                                    <div class="hydric-label" style="font-size: 12px; margin-bottom: 3px;">
                                         <i class="bi bi-exclamation-triangle"></i>
                                         Êmese (vezes)
                                     </div>
-                                    <div class="calculation-input-desktop">
-                                        <input type="text" id="emesis-input" class="form-control compact" placeholder="Ex: 2+1" tabindex="15" style="height: 32px;">
-                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('emesis')" style="height: 32px;">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('emesis')" style="height: 32px;">
+                                    <div class="hydric-input-container">
+                                        <input type="text" id="emesis-input" class="form-control compact hydric-input" placeholder="Ex: 2, 1+1" tabindex="15" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact danger" onclick="window.hydricAccumulator.clearField('emesis')" style="height: 32px;" title="Limpar tudo">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
-                                    <div class="calculation-total-desktop" id="emesis-total" style="font-size: 12px; margin-top: 3px;">Total: 0 vezes</div>
+                                    <div class="hydric-total" id="emesis-total" style="font-size: 12px; margin-top: 3px; font-weight: 600;">Total: 0 vezes</div>
+                                    <div class="hydric-history" id="emesis-history" style="display: none; margin-top: 5px;"></div>
                                     <input type="hidden" id="emesis" value="0">
                                 </div>
 
-                                <div class="calculation-field-desktop" data-field="evacuations">
-                                    <div class="calculation-label-desktop" style="font-size: 12px; margin-bottom: 3px;">
+                                <div class="hydric-field" data-field="evacuations">
+                                    <div class="hydric-label" style="font-size: 12px; margin-bottom: 3px;">
                                         <i class="bi bi-circle"></i>
                                         Evacuação (vezes)
                                     </div>
-                                    <div class="calculation-input-desktop">
-                                        <input type="text" id="evacuations-input" class="form-control compact" placeholder="Ex: 1+1" tabindex="16" style="height: 32px;">
-                                        <button type="button" class="healthcare-button compact primary" onclick="addCalculationValue('evacuations')" style="height: 32px;">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                        <button type="button" class="healthcare-button compact danger" onclick="clearCalculationField('evacuations')" style="height: 32px;">
+                                    <div class="hydric-input-container">
+                                        <input type="text" id="evacuations-input" class="form-control compact hydric-input" placeholder="Ex: 1, 1+1" tabindex="16" style="height: 32px;">
+                                        <button type="button" class="healthcare-button compact danger" onclick="window.hydricAccumulator.clearField('evacuations')" style="height: 32px;" title="Limpar tudo">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
-                                    <div class="calculation-total-desktop" id="evacuations-total" style="font-size: 12px; margin-top: 3px;">Total: 0 vezes</div>
+                                    <div class="hydric-total" id="evacuations-total" style="font-size: 12px; margin-top: 3px; font-weight: 600;">Total: 0 vezes</div>
+                                    <div class="hydric-history" id="evacuations-history" style="display: none; margin-top: 5px;"></div>
                                     <input type="hidden" id="evacuations" value="0">
                                 </div>
                             </div>
@@ -525,7 +457,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Scripts -->
-    <script src="static/js/secure-math-parser.js"></script>
+    <script src="static/js/safe-math-parser.js"></script>
+    <script src="static/js/hydric-accumulator.js"></script>
+    <script src="static/js/hydric-events.js"></script>
     <script src="static/js/calculator.js"></script>
     <script src="static/js/ui-manager.js"></script>
     <script src="static/js/form-handler.js"></script>

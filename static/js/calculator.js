@@ -80,9 +80,19 @@ class HydricBalanceCalculator {
      * Calcula todas as entradas (dieta, soro, medicação)
      */
     static calculateInputs(inputs, patientWeight) {
-        const diet = parseFloat(inputs.diet || 0);
-        const serum = parseFloat(inputs.serum || 0);
-        const medication = parseFloat(inputs.medication || 0);
+        // Usar dados do HydricAccumulator se disponível
+        let diet, serum, medication;
+        
+        if (window.hydricAccumulator) {
+            diet = window.hydricAccumulator.getFieldTotal('diet');
+            serum = window.hydricAccumulator.getFieldTotal('serum');
+            medication = window.hydricAccumulator.getFieldTotal('medication');
+        } else {
+            // Fallback para sistema antigo
+            diet = parseFloat(inputs.diet || 0);
+            serum = parseFloat(inputs.serum || 0);
+            medication = parseFloat(inputs.medication || 0);
+        }
 
         const totalInput = diet + serum + medication;
         const liquidIntake = totalInput / patientWeight;
@@ -103,10 +113,21 @@ class HydricBalanceCalculator {
      * Calcula todas as saídas (diurese, resíduo gástrico, etc.)
      */
     static calculateOutputs(outputs, patientWeight, timeframe) {
-        const diuresis = parseFloat(outputs.diuresis || 0);
-        const gastricResidue = parseFloat(outputs.gastricResidue || 0);
-        const emesis = parseFloat(outputs.emesis || 0);
-        const evacuations = parseFloat(outputs.evacuations || 0);
+        // Usar dados do HydricAccumulator se disponível
+        let diuresis, gastricResidue, emesis, evacuations;
+        
+        if (window.hydricAccumulator) {
+            diuresis = window.hydricAccumulator.getFieldTotal('diuresis');
+            gastricResidue = window.hydricAccumulator.getFieldTotal('gastric-residue');
+            emesis = window.hydricAccumulator.getFieldTotal('emesis');
+            evacuations = window.hydricAccumulator.getFieldTotal('evacuations');
+        } else {
+            // Fallback para sistema antigo
+            diuresis = parseFloat(outputs.diuresis || 0);
+            gastricResidue = parseFloat(outputs.gastricResidue || 0);
+            emesis = parseFloat(outputs.emesis || 0);
+            evacuations = parseFloat(outputs.evacuations || 0);
+        }
 
         const totalOutput = diuresis + gastricResidue;
         const outputPerKg = totalOutput / patientWeight;
