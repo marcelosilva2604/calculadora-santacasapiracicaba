@@ -24,17 +24,15 @@ class HydricBalanceApp {
      * Configura os event listeners principais
      */
     setupEventListeners() {
-        // Botão de cálculo
-        this.uiManager.elements.calculateBtn?.addEventListener('click', () => {
-            this.handleCalculation();
-        });
-
-        // Botão copiar resultado
+        // Sistema antigo desativado - usando apenas o modal
+        // O botão agora usa onclick="calculateBalance()" diretamente no HTML
+        
+        // Botão copiar resultado (se existir)
         this.uiManager.elements.copyResultBtn?.addEventListener('click', () => {
             this.uiManager.copyReport();
         });
 
-        // Botão novo paciente
+        // Botão novo paciente (se existir)
         this.uiManager.elements.newPatientBtn?.addEventListener('click', () => {
             this.handleNewPatient();
         });

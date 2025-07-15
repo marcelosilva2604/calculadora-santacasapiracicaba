@@ -15,6 +15,7 @@ class HealthcareInterface {
         this.setupEventListeners();
         this.setupAccessibility();
         this.setupOfflineHandling();
+        this.setupPediatricWeightValidation();
     }
 
     /**
@@ -316,6 +317,18 @@ class HealthcareInterface {
                 return;
             }
 
+            // Validar peso pediátrico
+            const patientWeight = parseFloat(document.getElementById('patient-weight')?.value);
+            console.log('patientWeight:', patientWeight);
+            
+            if (patientWeight && !isNaN(patientWeight) && (patientWeight < 0.3 || patientWeight > 6)) {
+                console.log('Peso fora do range pediátrico no cálculo');
+                this.showPediatricWeightAlert(patientWeight);
+                button.innerHTML = originalText;
+                button.disabled = false;
+                return;
+            }
+
             // Gerar e exibir relatório
             console.log('window.reportGenerator:', window.reportGenerator);
             
@@ -341,6 +354,124 @@ class HealthcareInterface {
             const button = document.getElementById('calculate-button');
             button.innerHTML = '<i class="bi bi-calculator"></i> Calcular Balanço';
             button.disabled = false;
+        }
+    }
+
+    /**
+     * Setup pediatric weight validation
+     */
+    setupPediatricWeightValidation() {
+        const weightField = document.getElementById('patient-weight');
+        if (!weightField) return;
+
+        // Validação em tempo real
+        weightField.addEventListener('input', (e) => {
+            const weight = parseFloat(e.target.value);
+            this.validatePediatricWeight(weight, e.target);
+        });
+
+        // Validação quando sair do campo - mais rigorosa
+        weightField.addEventListener('blur', (e) => {
+            const weight = parseFloat(e.target.value);
+            const field = e.target;
+            
+            // Se o peso for inválido, limpar o campo
+            if (weight && !isNaN(weight) && (weight < 0.3 || weight > 6)) {
+                setTimeout(() => {
+                    const message = weight < 0.3 
+                        ? `Peso mínimo para pediatria: 0,3 kg\nValor inserido: ${weight} kg\n\nCampo será limpo para nova inserção.`
+                        : `Peso máximo para pediatria: 6 kg\nValor inserido: ${weight} kg\n\nCampo será limpo para nova inserção.`;
+                    
+                    alert(message);
+                    field.value = '';
+                    field.focus();
+                    this.removeWeightWarning();
+                    field.classList.remove('weight-warning');
+                }, 100);
+            }
+        });
+    }
+
+    /**
+     * Validate pediatric weight with visual feedback
+     */
+    validatePediatricWeight(weight, field) {
+        console.log('Validando peso:', weight, 'Type:', typeof weight);
+        
+        if (!weight || isNaN(weight) || weight === '') {
+            // Remove any existing validation styling
+            field.classList.remove('weight-warning', 'weight-error');
+            this.removeWeightWarning();
+            return;
+        }
+
+        const numericWeight = parseFloat(weight);
+        console.log('Peso numérico:', numericWeight);
+        console.log('Condição < 0.3:', numericWeight < 0.3);
+        console.log('Condição > 6:', numericWeight > 6);
+        
+        if (numericWeight < 0.3 || numericWeight > 6) {
+            console.log('Peso inválido detectado!');
+            // Add visual warning
+            field.classList.add('weight-warning');
+            this.showWeightWarning(numericWeight);
+        } else {
+            console.log('Peso válido');
+            // Remove warning if weight is valid
+            field.classList.remove('weight-warning');
+            this.removeWeightWarning();
+        }
+    }
+
+    /**
+     * Show real-time weight warning
+     */
+    showWeightWarning(weight) {
+        // Remove existing warning
+        this.removeWeightWarning();
+
+        const weightField = document.getElementById('patient-weight');
+        const message = weight < 0.3 
+            ? `⚠️ Peso abaixo do mínimo pediátrico (0,3 kg)`
+            : `⚠️ Peso acima do máximo pediátrico (6 kg)`;
+        
+        // Create warning element
+        const warning = document.createElement('div');
+        warning.id = 'weight-warning';
+        warning.className = 'form-warning';
+        warning.innerHTML = `<i class="bi bi-exclamation-triangle"></i> ${message}`;
+        
+        // Insert warning after weight field
+        weightField.parentNode.insertBefore(warning, weightField.nextSibling);
+    }
+
+    /**
+     * Remove weight warning
+     */
+    removeWeightWarning() {
+        const existingWarning = document.getElementById('weight-warning');
+        if (existingWarning) {
+            existingWarning.remove();
+        }
+    }
+
+    /**
+     * Show pediatric weight alert
+     */
+    showPediatricWeightAlert(weight) {
+        const message = weight < 0.3 
+            ? `⚠️ ATENÇÃO: Peso informado (${weight} kg) está abaixo do mínimo para pacientes pediátricos (0,3 kg).\n\nO campo será limpo para nova inserção.`
+            : `⚠️ ATENÇÃO: Peso informado (${weight} kg) está acima do máximo para pacientes pediátricos (6 kg).\n\nO campo será limpo para nova inserção.`;
+        
+        alert(message);
+        
+        // Limpar o campo e focar para correção
+        const weightField = document.getElementById('patient-weight');
+        if (weightField) {
+            weightField.value = '';
+            weightField.focus();
+            this.removeWeightWarning();
+            weightField.classList.remove('weight-warning');
         }
     }
 
@@ -395,6 +526,11 @@ class HealthcareInterface {
                 input.value = '';
                 input.classList.remove('success');
             });
+
+            // Reset hydric accumulator
+            if (window.hydricAccumulator) {
+                window.hydricAccumulator.reset();
+            }
 
             // Clear calculation fields
             if (window.hydricBalanceApp?.formHandler) {
