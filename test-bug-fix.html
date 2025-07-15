@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste - Bug do Botão X</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-area { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+        .hydric-field { margin: 10px 0; }
+        .history-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 2px 0; 
+            border-bottom: 1px solid #eee;
+        }
+        .history-remove { 
+            background: #dc3545; 
+            color: white; 
+            border: none; 
+            padding: 2px 8px; 
+            cursor: pointer; 
+            border-radius: 3px; 
+        }
+        .history-remove:hover { background: #c82333; }
+        .log { background: #f0f0f0; padding: 10px; margin: 10px 0; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>Teste - Bug do Botão X</h1>
+    
+    <div class="test-area">
+        <h3>Teste do Campo Diet</h3>
+        <div class="hydric-field">
+            <label>Diet:</label>
+            <input type="text" id="diet-input" placeholder="Digite um valor">
+            <button onclick="addValueManually()">Adicionar</button>
+        </div>
+        <div id="diet-total">Total: 0 ml</div>
+        <div id="diet-history" style="margin-top: 10px;"></div>
+    </div>
+    
+    <div class="test-area">
+        <h3>Controles de Teste</h3>
+        <button onclick="testAdd30()">Adicionar 30</button>
+        <button onclick="testAdd100()">Adicionar 100</button>
+        <button onclick="testAdd250()">Adicionar 250</button>
+        <button onclick="showData()">Mostrar Dados</button>
+        <button onclick="clearLog()">Limpar Log</button>
+    </div>
+    
+    <div class="log" id="log"></div>
+    
+    <script src="static/js/debug-logger.js"></script>
+    <script src="static/js/safe-math-parser.js"></script>
+    <script src="static/js/hydric-accumulator.js"></script>
+    
+    <script>
+        // Função para log
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        // Função para adicionar valor manualmente
+        function addValueManually() {
+            const input = document.getElementById('diet-input');
+            const value = input.value.trim();
+            if (!value) return;
+            
+            const result = window.hydricAccumulator.addValue('diet', value);
+            log(`Adicionado: ${value} => ${JSON.stringify(result)}`);
+            input.value = '';
+        }
+        
+        // Funções de teste
+        function testAdd30() {
+            const result = window.hydricAccumulator.addValue('diet', '30');
+            log(`Teste Add 30: ${JSON.stringify(result)}`);
+        }
+        
+        function testAdd100() {
+            const result = window.hydricAccumulator.addValue('diet', '100');
+            log(`Teste Add 100: ${JSON.stringify(result)}`);
+        }
+        
+        function testAdd250() {
+            const result = window.hydricAccumulator.addValue('diet', '250');
+            log(`Teste Add 250: ${JSON.stringify(result)}`);
+        }
+        
+        function showData() {
+            const data = window.hydricAccumulator.getFieldData('diet');
+            log(`Dados atuais do campo diet: ${JSON.stringify(data)}`);
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+        
+        // Listener para Enter no input
+        document.getElementById('diet-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addValueManually();
+            }
+        });
+        
+        // Log inicial
+        log('Teste iniciado - Adicione alguns valores e clique no X para testar');
+        
+        // Adicionar alguns valores iniciais automaticamente
+        setTimeout(() => {
+            testAdd30();
+            testAdd100();
+            testAdd250();
+            log('Valores iniciais adicionados. Agora clique no X para testar a remoção');
+        }, 500);
+    </script>
+</body>
+</html>

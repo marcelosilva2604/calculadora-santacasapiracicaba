@@ -5,6 +5,7 @@
 
 class HydricEventManager {
     constructor() {
+        this.currentFocusedField = null;
         this.setupEventListeners();
     }
 
@@ -37,6 +38,42 @@ class HydricEventManager {
                 this.setupFieldListeners(field, input);
             }
         });
+
+        // Adicionar listener para cliques fora dos campos
+        this.setupGlobalClickListener();
+    }
+
+    /**
+     * Configura listener global para cliques fora dos campos
+     */
+    setupGlobalClickListener() {
+        document.addEventListener('click', (e) => {
+            // Verificar se o clique foi dentro de um campo de balanço hídrico
+            const hydricField = e.target.closest('.hydric-field');
+            const hydricInput = e.target.closest('.hydric-input');
+            const hydricTotal = e.target.closest('.hydric-total');
+            const historyRemove = e.target.closest('.history-remove');
+            const historyItem = e.target.closest('.history-item');
+            
+            // Se clicou no botão de remoção, manter o foco no campo
+            if (historyRemove || historyItem) {
+                console.log('🔘 Clique no botão de remoção - mantendo foco');
+                // Identificar qual campo está sendo usado
+                const fieldContainer = e.target.closest('.hydric-field');
+                if (fieldContainer) {
+                    const fieldName = fieldContainer.getAttribute('data-field');
+                    if (fieldName) {
+                        this.setFocusedField(fieldName);
+                    }
+                }
+                return; // Não remover o foco
+            }
+            
+            // Se não clicou em nenhum elemento relacionado ao balanço hídrico, remover foco
+            if (!hydricField && !hydricInput && !hydricTotal) {
+                this.setFocusedField(null);
+            }
+        });
     }
 
     /**
@@ -58,7 +95,7 @@ class HydricEventManager {
 
         // Limpar feedback ao focar
         input.addEventListener('focus', () => {
-            this.clearFieldFeedback(fieldName, input);
+            this.handleFocus(fieldName, input);
         });
 
         // Validação ao sair do campo
@@ -107,6 +144,14 @@ class HydricEventManager {
     }
 
     /**
+     * Manipula evento de focus
+     */
+    handleFocus(fieldName, input) {
+        this.clearFieldFeedback(fieldName, input);
+        this.setFocusedField(fieldName);
+    }
+
+    /**
      * Manipula evento de blur
      */
     handleBlur(fieldName, input) {
@@ -120,6 +165,7 @@ class HydricEventManager {
                 this.showErrorFeedback(fieldName, input, error.message);
             }
         }
+        
     }
 
     /**
@@ -226,37 +272,80 @@ class HydricEventManager {
     }
 
     /**
-     * Adiciona instructional text aos campos
+     * Define o campo em foco e controla visibilidade dos detalhes
      */
-    addInstructionalText() {
+    setFocusedField(fieldName) {
+        this.currentFocusedField = fieldName;
+        this.updateDetailedViewsVisibility();
+    }
+
+    /**
+     * Atualiza visibilidade dos valores detalhados baseado no foco
+     */
+    updateDetailedViewsVisibility() {
         const fields = [
             'diet', 'serum', 'medication',
             'diuresis', 'gastric-residue', 'emesis', 'evacuations'
         ];
 
         fields.forEach(field => {
-            const container = document.getElementById(`${field}-input`)?.closest('.hydric-field');
-            if (container) {
-                const instruction = document.createElement('div');
-                instruction.className = 'hydric-instruction';
-                instruction.innerHTML = `
-                    <small class="text-muted">
-                        <i class="bi bi-info-circle"></i>
-                        Digite um valor ou expressão (ex: 150, 1.5*24, 50+30) e pressione Enter
-                    </small>
-                `;
-                container.appendChild(instruction);
+            const historyElement = document.getElementById(`${field}-history`);
+            if (historyElement) {
+                const fieldData = window.hydricAccumulator?.getFieldData(field);
+                
+                if (fieldData && fieldData.expressions && fieldData.expressions.length > 0) {
+                    // Se o campo tem valores e está em foco, mostrar detalhes
+                    if (this.currentFocusedField === field) {
+                        historyElement.style.display = 'block';
+                        historyElement.classList.add('detailed-view');
+                    } else {
+                        // Se não está em foco, ocultar detalhes
+                        historyElement.style.display = 'none';
+                        historyElement.classList.remove('detailed-view');
+                    }
+                } else {
+                    // Se não tem valores, sempre ocultar
+                    historyElement.style.display = 'none';
+                    historyElement.classList.remove('detailed-view');
+                }
             }
         });
     }
+
+    /**
+     * Permite mostrar detalhes ao clicar no total
+     */
+    setupTotalClickListeners() {
+        const fields = [
+            'diet', 'serum', 'medication',
+            'diuresis', 'gastric-residue', 'emesis', 'evacuations'
+        ];
+
+        fields.forEach(field => {
+            const totalElement = document.getElementById(`${field}-total`);
+            if (totalElement) {
+                totalElement.style.cursor = 'pointer';
+                totalElement.addEventListener('click', () => {
+                    this.setFocusedField(field);
+                    
+                    // Opcionalmente, focar no input também
+                    const input = document.getElementById(`${field}-input`);
+                    if (input) {
+                        input.focus();
+                    }
+                });
+            }
+        });
+    }
+
 }
 
 // Inicializar quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
     window.hydricEventManager = new HydricEventManager();
     
-    // Adicionar texto instrucional após um pequeno delay
+    // Configurar listeners após um pequeno delay
     setTimeout(() => {
-        window.hydricEventManager.addInstructionalText();
+        window.hydricEventManager.setupTotalClickListeners();
     }, 1000);
 });

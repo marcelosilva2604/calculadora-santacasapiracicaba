@@ -21,7 +21,110 @@ class ReportGenerator {
     }
 
     /**
-     * Coleta dados dos sinais vitais
+     * Calcula o balanço hídrico completo
+     */
+    calculateHydricBalance(patientData) {
+        const weight = parseFloat(patientData.weight) || 0;
+        const timeframe = parseInt(patientData.timeframe) || 24;
+        
+        if (weight <= 0) {
+            return {
+                error: 'Peso do paciente necessário para cálculo',
+                hasData: false
+            };
+        }
+        
+        // Coletar dados do HydricAccumulator
+        const hydricData = {
+            // Entradas (ml)
+            diet: window.hydricAccumulator?.getFieldTotal('diet') || 0,
+            serum: window.hydricAccumulator?.getFieldTotal('serum') || 0,
+            medication: window.hydricAccumulator?.getFieldTotal('medication') || 0,
+            
+            // Saídas (ml)
+            diuresis: window.hydricAccumulator?.getFieldTotal('diuresis') || 0,
+            gastricResidue: window.hydricAccumulator?.getFieldTotal('gastric-residue') || 0,
+            
+            // Contadores (vezes)
+            emesis: window.hydricAccumulator?.getFieldTotal('emesis') || 0,
+            evacuations: window.hydricAccumulator?.getFieldTotal('evacuations') || 0
+        };
+        
+        // Calcular totais de entrada (Oferta Hídrica)
+        const totalInputML = hydricData.diet + hydricData.serum + hydricData.medication;
+        const totalInputMLPerKg = totalInputML / weight;
+        
+        // Calcular totais de saída (Perdas)
+        const totalOutputML = hydricData.diuresis + hydricData.gastricResidue;
+        const totalOutputMLPerKg = totalOutputML / weight;
+        
+        // Calcular balanço hídrico final
+        const balanceML = totalInputML - totalOutputML;
+        const balanceMLPerKg = balanceML / weight;
+        
+        // Calcular diurese por ml/kg/h
+        const diuresisMLPerKgPerHour = hydricData.diuresis / weight / timeframe;
+        
+        // Determinar status do balanço
+        let balanceStatus = 'neutro';
+        if (balanceML > 0) balanceStatus = 'positivo';
+        else if (balanceML < 0) balanceStatus = 'negativo';
+        
+        return {
+            hasData: true,
+            weight: weight,
+            timeframe: timeframe,
+            
+            // Entradas individuais
+            diet: {
+                ml: hydricData.diet,
+                mlPerKg: hydricData.diet / weight
+            },
+            serum: {
+                ml: hydricData.serum,
+                mlPerKg: hydricData.serum / weight
+            },
+            medication: {
+                ml: hydricData.medication,
+                mlPerKg: hydricData.medication / weight
+            },
+            
+            // Saídas individuais
+            diuresis: {
+                ml: hydricData.diuresis,
+                mlPerKg: hydricData.diuresis / weight,
+                mlPerKgPerHour: diuresisMLPerKgPerHour
+            },
+            gastricResidue: {
+                ml: hydricData.gastricResidue,
+                mlPerKg: hydricData.gastricResidue / weight
+            },
+            
+            // Contadores
+            emesis: hydricData.emesis,
+            evacuations: hydricData.evacuations,
+            
+            // Totais
+            totalInput: {
+                ml: totalInputML,
+                mlPerKg: totalInputMLPerKg
+            },
+            totalOutput: {
+                ml: totalOutputML,
+                mlPerKg: totalOutputMLPerKg
+            },
+            
+            // Balanço final
+            balance: {
+                ml: balanceML,
+                mlPerKg: balanceMLPerKg,
+                status: balanceStatus
+            }
+        };
+    }
+
+    /**
+     * Coleta dados dos sinais vitais (versão simplificada)
      */
     collectVitalSigns() {
         const vitalSigns = [
@@ -66,33 +169,14 @@ class ReportGenerator {
         const collectedData = [];
 
         vitalSigns.forEach(vital => {
-            const formHandler = window.hydricBalanceApp?.formHandler;
-            const fieldHandler = formHandler?.calculationFields?.get(vital.id);
+            const inputElement = document.getElementById(vital.id);
+            const value = inputElement?.value?.trim();
             
-            if (fieldHandler && fieldHandler.values && fieldHandler.values.length > 0) {
-                const values = fieldHandler.values;
-                const hasRangeOrMultiple = values.some(v => v.type === 'range' || v.type === 'multiple');
-                
-                // Calcular média
-                const average = values.reduce((sum, item) => sum + item.value, 0) / values.length;
-                
-                // Preparar detalhes dos valores
-                const details = values.map(item => {
-                    if (item.type === 'range') {
-                        return `${item.expression} (média: ${Math.round(item.value)})`;
-                    } else if (item.type === 'multiple') {
-                        return `${item.expression} (média: ${Math.round(item.value)})`;
-                    } else {
-                        return item.expression;
-                    }
-                }).join(', ');
-
+            if (value && value !== '') {
                 collectedData.push({
                     ...vital,
-                    average: Math.round(average),
-                    details: details,
-                    hasRangeOrMultiple: hasRangeOrMultiple,
-                    valuesCount: values.length
+                    value: value,
+                    details: value
                 });
             }
         });
@@ -101,11 +185,146 @@ class ReportGenerator {
     }
 
     /**
+     * Gera o HTML da seção de balanço hídrico
+     */
+    generateHydricBalanceHTML(hydricBalance) {
+        const formatNumber = (num) => {
+            return Math.round(num * 100) / 100;
+        };
+
+        let html = `
+            <div class="report-section">
+                <h3>
+                    <i class="bi bi-droplet"></i>
+                    Balanço Hídrico
+                </h3>
+                
+                <!-- Entradas -->
+                <div class="report-subsection">
+                    <h4 style="color: #0066cc; margin-bottom: 10px;">
+                        <i class="bi bi-arrow-down-circle"></i>
+                        Entradas
+                    </h4>
+        `;
+
+        // Dieta
+        if (hydricBalance.diet.ml > 0) {
+            html += `
+                <div class="report-item">
+                    <span class="report-item-label">Dieta:</span>
+                    <span class="report-item-value">${formatNumber(hydricBalance.diet.ml)} ml (${formatNumber(hydricBalance.diet.mlPerKg)} ml/kg)</span>
+                </div>
+            `;
+        }
+
+        // Soro
+        if (hydricBalance.serum.ml > 0) {
+            html += `
+                <div class="report-item">
+                    <span class="report-item-label">Soro:</span>
+                    <span class="report-item-value">${formatNumber(hydricBalance.serum.ml)} ml (${formatNumber(hydricBalance.serum.mlPerKg)} ml/kg)</span>
+                </div>
+            `;
+        }
+
+        // Medicação
+        if (hydricBalance.medication.ml > 0) {
+            html += `
+                <div class="report-item">
+                    <span class="report-item-label">Medicação:</span>
+                    <span class="report-item-value">${formatNumber(hydricBalance.medication.ml)} ml (${formatNumber(hydricBalance.medication.mlPerKg)} ml/kg)</span>
+                </div>
+            `;
+        }
+
+        // Total de Entradas (Oferta Hídrica)
+        html += `
+                <div class="report-item total-item" style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; font-weight: bold;">
+                    <span class="report-item-label">Oferta Hídrica Total:</span>
+                    <span class="report-item-value">${formatNumber(hydricBalance.totalInput.ml)} ml (${formatNumber(hydricBalance.totalInput.mlPerKg)} ml/kg)</span>
+                </div>
+            </div>
+            
+            <!-- Saídas -->
+            <div class="report-subsection">
+                <h4 style="color: #cc6600; margin-bottom: 10px;">
+                    <i class="bi bi-arrow-up-circle"></i>
+                    Saídas
+                </h4>
+        `;
+
+        // Diurese
+        if (hydricBalance.diuresis.ml > 0) {
+            html += `
+                <div class="report-item">
+                    <span class="report-item-label">Diurese:</span>
+                    <span class="report-item-value">${formatNumber(hydricBalance.diuresis.ml)} ml (${formatNumber(hydricBalance.diuresis.mlPerKg)} ml/kg) - ${formatNumber(hydricBalance.diuresis.mlPerKgPerHour)} ml/kg/h</span>
+                </div>
+            `;
+        }
+
+        // Resíduo Gástrico
+        if (hydricBalance.gastricResidue.ml > 0) {
+            html += `
+                <div class="report-item">
+                    <span class="report-item-label">Resíduo Gástrico:</span>
+                    <span class="report-item-value">${formatNumber(hydricBalance.gastricResidue.ml)} ml (${formatNumber(hydricBalance.gastricResidue.mlPerKg)} ml/kg)</span>
+                </div>
+            `;
+        }
+
+        // Êmese (apenas contador)
+        if (hydricBalance.emesis > 0) {
+            html += `
+                <div class="report-item">
+                    <span class="report-item-label">Êmese:</span>
+                    <span class="report-item-value">${hydricBalance.emesis} vezes</span>
+                </div>
+            `;
+        }
+
+        // Evacuações (apenas contador)
+        if (hydricBalance.evacuations > 0) {
+            html += `
+                <div class="report-item">
+                    <span class="report-item-label">Evacuações:</span>
+                    <span class="report-item-value">${hydricBalance.evacuations} vezes</span>
+                </div>
+            `;
+        }
+
+        // Total de Saídas (Perdas)
+        html += `
+                <div class="report-item total-item" style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px; font-weight: bold;">
+                    <span class="report-item-label">Perdas Total:</span>
+                    <span class="report-item-value">${formatNumber(hydricBalance.totalOutput.ml)} ml (${formatNumber(hydricBalance.totalOutput.mlPerKg)} ml/kg)</span>
+                </div>
+            </div>
+            
+            <!-- Balanço Final -->
+            <div class="report-subsection">
+                <h4 style="color: ${hydricBalance.balance.status === 'positivo' ? '#009900' : hydricBalance.balance.status === 'negativo' ? '#cc0000' : '#666666'}; margin-bottom: 10px;">
+                    <i class="bi bi-calculator"></i>
+                    Balanço Hídrico Final
+                </h4>
+                <div class="report-item balance-item" style="border: 2px solid ${hydricBalance.balance.status === 'positivo' ? '#009900' : hydricBalance.balance.status === 'negativo' ? '#cc0000' : '#666666'}; padding: 15px; border-radius: 8px; background-color: ${hydricBalance.balance.status === 'positivo' ? '#f0fff0' : hydricBalance.balance.status === 'negativo' ? '#fff0f0' : '#f5f5f5'};">
+                    <span class="report-item-label" style="font-size: 16px; font-weight: bold;">Balanço ${hydricBalance.balance.status.charAt(0).toUpperCase() + hydricBalance.balance.status.slice(1)}:</span>
+                    <span class="report-item-value" style="font-size: 16px; font-weight: bold;">${formatNumber(hydricBalance.balance.ml)} ml (${formatNumber(hydricBalance.balance.mlPerKg)} ml/kg)</span>
+                </div>
+            </div>
+        </div>
+        `;
+
+        return html;
+    }
+
+    /**
      * Gera o HTML do relatório
      */
     generateReportHTML() {
         const patientData = this.collectPatientData();
         const vitalSigns = this.collectVitalSigns();
+        const hydricBalance = this.calculateHydricBalance(patientData);
         const currentDate = new Date().toLocaleDateString('pt-BR');
         const currentTime = new Date().toLocaleTimeString('pt-BR');
 
@@ -138,6 +357,21 @@ class ReportGenerator {
             </div>
         `;
 
+        // Adicionar seção de balanço hídrico
+        if (hydricBalance.hasData) {
+            html += this.generateHydricBalanceHTML(hydricBalance);
+        } else {
+            html += `
+                <div class="report-section">
+                    <h3>
+                        <i class="bi bi-droplet"></i>
+                        Balanço Hídrico
+                    </h3>
+                    <p class="text-muted">${hydricBalance.error || 'Dados insuficientes para cálculo do balanço hídrico.'}</p>
+                </div>
+            `;
+        }
+
         if (vitalSigns.length > 0) {
             html += `
                 <div class="report-section">
@@ -156,11 +390,8 @@ class ReportGenerator {
                                 ${vital.name}
                             </div>
                             <div class="report-vital-sign-detail">
-                                Valores: ${vital.details}
+                                ${vital.details} ${vital.unit}
                             </div>
-                        </div>
-                        <div class="report-vital-sign-value">
-                            ${vital.average} ${vital.unit}
                         </div>
                     </div>
                 `;
@@ -183,7 +414,7 @@ class ReportGenerator {
     }
 
     /**
-     * Exibe o relatório no modal
+     * Exibe o relatório no modal centralizado
      */
     showReport() {
         console.log('showReport() chamado');
@@ -212,12 +443,47 @@ class ReportGenerator {
             return;
         }
 
-        // Exibir modal (usando Bootstrap)
+        // Exibir modal centralizado
         try {
-            const modal = new bootstrap.Modal(reportModal);
+            // Criar backdrop opaco
+            const backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            backdrop.style.position = 'fixed';
+            backdrop.style.top = '0';
+            backdrop.style.left = '0';
+            backdrop.style.width = '100vw';
+            backdrop.style.height = '100vh';
+            backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            backdrop.style.zIndex = '1040';
+            document.body.appendChild(backdrop);
+            
+            // Adicionar classe show para aplicar o CSS de centralização
+            reportModal.classList.add('show');
+            
+            // Usar Bootstrap Modal sem backdrop próprio
+            const modal = new bootstrap.Modal(reportModal, {
+                backdrop: false, // Usamos nosso backdrop customizado
+                keyboard: true,
+                focus: true
+            });
+            
             console.log('Modal criado:', modal);
             modal.show();
             console.log('Modal.show() chamado');
+            
+            // Fechar modal ao clicar no backdrop
+            backdrop.addEventListener('click', () => {
+                modal.hide();
+            });
+            
+            // Remover classe show e backdrop quando modal for fechado
+            reportModal.addEventListener('hidden.bs.modal', () => {
+                reportModal.classList.remove('show');
+                if (backdrop.parentNode) {
+                    backdrop.parentNode.removeChild(backdrop);
+                }
+            }, { once: true });
+            
         } catch (error) {
             console.error('Erro ao exibir modal:', error);
             alert('Erro ao exibir relatório: ' + error.message);
