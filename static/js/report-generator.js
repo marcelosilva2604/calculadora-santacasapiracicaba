@@ -327,6 +327,27 @@ class ReportGenerator {
         const hydricBalance = this.calculateHydricBalance(patientData);
         const currentDate = new Date().toLocaleDateString('pt-BR');
         const currentTime = new Date().toLocaleTimeString('pt-BR');
+        
+        const formatPatientName = (name) => {
+            if (!name || name === 'Não informado') return name;
+            
+            // Converter para minúsculas primeiro
+            let formattedName = name.toLowerCase();
+            
+            // Verificar se começa com "rn" (recém-nascido)
+            if (formattedName.startsWith('rn ')) {
+                // Capitalizar "RN" e o restante do nome
+                formattedName = 'RN ' + formattedName.substring(3);
+            }
+            
+            // Capitalizar primeira letra de cada palavra
+            formattedName = formattedName.replace(/\b\w/g, (char) => char.toUpperCase());
+            
+            // Manter preposições em minúsculas (de, da, do, dos, das)
+            formattedName = formattedName.replace(/\b(De|Da|Do|Dos|Das)\b/g, (match) => match.toLowerCase());
+            
+            return formattedName;
+        };
 
         let html = `
             <div class="report-section">
@@ -336,7 +357,7 @@ class ReportGenerator {
                 </h3>
                 <div class="report-item">
                     <span class="report-item-label">Nome:</span>
-                    <span class="report-item-value">${patientData.name}</span>
+                    <span class="report-item-value">${formatPatientName(patientData.name)}</span>
                 </div>
                 <div class="report-item">
                     <span class="report-item-label">Leito:</span>
@@ -357,21 +378,7 @@ class ReportGenerator {
             </div>
         `;
 
-        // Adicionar seção de balanço hídrico
-        if (hydricBalance.hasData) {
-            html += this.generateHydricBalanceHTML(hydricBalance);
-        } else {
-            html += `
-                <div class="report-section">
-                    <h3>
-                        <i class="bi bi-droplet"></i>
-                        Balanço Hídrico
-                    </h3>
-                    <p class="text-muted">${hydricBalance.error || 'Dados insuficientes para cálculo do balanço hídrico.'}</p>
-                </div>
-            `;
-        }
-
+        // Adicionar seção de sinais vitais ANTES do balanço hídrico
         if (vitalSigns.length > 0) {
             html += `
                 <div class="report-section">
@@ -406,6 +413,21 @@ class ReportGenerator {
                         Sinais Vitais
                     </h3>
                     <p class="text-muted">Nenhum sinal vital foi registrado.</p>
+                </div>
+            `;
+        }
+
+        // Adicionar seção de balanço hídrico DEPOIS dos sinais vitais
+        if (hydricBalance.hasData) {
+            html += this.generateHydricBalanceHTML(hydricBalance);
+        } else {
+            html += `
+                <div class="report-section">
+                    <h3>
+                        <i class="bi bi-droplet"></i>
+                        Balanço Hídrico
+                    </h3>
+                    <p class="text-muted">${hydricBalance.error || 'Dados insuficientes para cálculo do balanço hídrico.'}</p>
                 </div>
             `;
         }
@@ -529,9 +551,25 @@ function copyReport() {
     // Gerar texto formatado customizado
     const textContent = generateTextForCopy();
     
+    // Encontrar o botão de copiar
+    const copyButton = document.querySelector('button[onclick="copyReport()"]');
+    
     // Copiar para clipboard
     navigator.clipboard.writeText(textContent).then(() => {
-        alert('Relatório copiado para a área de transferência!');
+        // Alterar o botão para mostrar sucesso
+        if (copyButton) {
+            const originalHTML = copyButton.innerHTML;
+            copyButton.innerHTML = '<i class="bi bi-check-circle"></i> Copiado';
+            copyButton.style.backgroundColor = '#28a745';
+            copyButton.style.borderColor = '#28a745';
+            
+            // Restaurar o botão após 2 segundos
+            setTimeout(() => {
+                copyButton.innerHTML = originalHTML;
+                copyButton.style.backgroundColor = '';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        }
     }).catch(err => {
         console.error('Erro ao copiar:', err);
         alert('Erro ao copiar o relatório.');
@@ -622,6 +660,60 @@ function generateTextForCopy() {
     text += `Data/Hora do Relatório: ${currentDate} - ${currentTime}\n`;
     
     return text;
+}
+
+// Função para iniciar novo paciente a partir do relatório
+function newPatientFromReport() {
+    // Fechar o modal primeiro
+    const modal = bootstrap.Modal.getInstance(document.getElementById('report-modal'));
+    if (modal) {
+        modal.hide();
+    }
+    
+    // Aguardar o modal fechar completamente antes de limpar os campos
+    setTimeout(() => {
+        // Limpar todos os campos do formulário
+        document.querySelectorAll('input').forEach(input => {
+            if (input.type !== 'radio') {
+                input.value = '';
+                input.classList.remove('success', 'error');
+            }
+        });
+        
+        // Resetar período para 24 horas (padrão)
+        document.getElementById('period-24').checked = true;
+        document.getElementById('period-12').checked = false;
+        
+        // Limpar acumulador hídrico se existir
+        if (window.hydricAccumulator) {
+            window.hydricAccumulator.reset();
+        }
+        
+        // Limpar campos de cálculo se existir
+        if (window.hydricBalanceApp?.formHandler) {
+            window.hydricBalanceApp.formHandler.resetAllCalculationFields();
+        }
+        
+        // Ocultar área de resultados
+        const resultsContainer = document.getElementById('results-container');
+        if (resultsContainer) {
+            resultsContainer.style.display = 'none';
+        }
+        
+        // Focar no campo nome do paciente
+        const patientNameField = document.getElementById('patient-name');
+        if (patientNameField) {
+            patientNameField.focus();
+        }
+        
+        // Scroll para o topo da página
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Mostrar feedback visual (opcional)
+        if (window.healthcareInterface) {
+            window.healthcareInterface.showToast('Pronto para novo paciente', 'success');
+        }
+    }, 300); // Aguardar 300ms para o modal fechar
 }
 
 // Instância global do gerador de relatórios
