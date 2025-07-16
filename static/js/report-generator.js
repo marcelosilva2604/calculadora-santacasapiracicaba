@@ -526,8 +526,8 @@ function copyReport() {
     const reportContent = document.getElementById('report-content');
     if (!reportContent) return;
 
-    // Converter HTML para texto
-    const textContent = reportContent.innerText;
+    // Gerar texto formatado customizado
+    const textContent = generateTextForCopy();
     
     // Copiar para clipboard
     navigator.clipboard.writeText(textContent).then(() => {
@@ -538,5 +538,71 @@ function copyReport() {
     });
 }
 
+function generateTextForCopy() {
+    const patientData = window.reportGenerator.collectPatientData();
+    const vitalSigns = window.reportGenerator.collectVitalSigns();
+    const hydricBalance = window.reportGenerator.calculateHydricBalance(patientData);
+    const currentDate = new Date().toLocaleDateString('pt-BR');
+    const currentTime = new Date().toLocaleTimeString('pt-BR');
+    
+    const formatNumber = (num) => {
+        return Math.round(num * 100) / 100;
+    };
+    
+    let text = `Dados do Paciente\n`;
+    text += `Nome: ${patientData.name}\n`;
+    text += `Leito: ${patientData.bed} Peso: ${patientData.weight} ${patientData.weight !== 'Não informado' ? 'kg' : ''}\n`;
+    text += `\n`;
+    
+    if (vitalSigns.length > 0) {
+        text += `Sinais Vitais\n`;
+        vitalSigns.forEach(vital => {
+            text += `${vital.name}: ${vital.details} ${vital.unit}\n`;
+        });
+        text += `\n`;
+    }
+    
+    if (hydricBalance.hasData) {
+        text += `Balanço Hídrico\n`;
+        text += `Entradas\n`;
+        
+        if (hydricBalance.diet.ml > 0) {
+            text += `Dieta: ${formatNumber(hydricBalance.diet.ml)} ml (${formatNumber(hydricBalance.diet.mlPerKg)} ml/kg)\n`;
+        }
+        if (hydricBalance.serum.ml > 0) {
+            text += `Soro: ${formatNumber(hydricBalance.serum.ml)} ml (${formatNumber(hydricBalance.serum.mlPerKg)} ml/kg)\n`;
+        }
+        if (hydricBalance.medication.ml > 0) {
+            text += `Medicação: ${formatNumber(hydricBalance.medication.ml)} ml (${formatNumber(hydricBalance.medication.mlPerKg)} ml/kg)\n`;
+        }
+        text += `Oferta Hídrica Total: ${formatNumber(hydricBalance.totalInput.ml)} ml (${formatNumber(hydricBalance.totalInput.mlPerKg)} ml/kg)\n`;
+        text += `\n`;
+        text += `Saídas\n`;
+        if (hydricBalance.diuresis.ml > 0) {
+            text += `Diurese: ${formatNumber(hydricBalance.diuresis.ml)} ml (${formatNumber(hydricBalance.diuresis.mlPerKg)} ml/kg) - ${formatNumber(hydricBalance.diuresis.mlPerKgPerHour)} ml/kg/h\n`;
+        }
+        if (hydricBalance.gastricResidue.ml > 0) {
+            text += `Resíduo Gástrico: ${formatNumber(hydricBalance.gastricResidue.ml)} ml (${formatNumber(hydricBalance.gastricResidue.mlPerKg)} ml/kg)\n`;
+        }
+        if (hydricBalance.emesis > 0) {
+            text += `Êmese: ${hydricBalance.emesis} vezes\n`;
+        }
+        if (hydricBalance.evacuations > 0) {
+            text += `Evacuações: ${hydricBalance.evacuations} vezes\n`;
+        }
+        text += `Perdas Total: ${formatNumber(hydricBalance.totalOutput.ml)} ml (${formatNumber(hydricBalance.totalOutput.mlPerKg)} ml/kg)\n`;
+        text += `\n`;
+        text += `Balanço Hídrico Final\n`;
+        text += `Balanço ${hydricBalance.balance.status.charAt(0).toUpperCase() + hydricBalance.balance.status.slice(1)}: ${formatNumber(hydricBalance.balance.ml)} ml (${formatNumber(hydricBalance.balance.mlPerKg)} ml/kg)\n`;
+        text += `\n`;
+    }
+    
+    text += `Período de Avaliação: ${patientData.timeframe} horas\n`;
+    text += `Data/Hora do Relatório: ${currentDate} - ${currentTime}\n`;
+    
+    return text;
+}
+
 // Instância global do gerador de relatórios
 window.reportGenerator = new ReportGenerator();
+console.log('Report Generator carregado em:', new Date().toLocaleTimeString());

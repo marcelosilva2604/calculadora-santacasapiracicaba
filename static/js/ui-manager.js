@@ -194,6 +194,12 @@ class UIManager {
      * Formata o relatório para cópia em texto
      */
     formatReportForCopy() {
+        // Usar o gerador de relatório atualizado
+        if (window.reportGenerator && typeof generateTextForCopy === 'function') {
+            return generateTextForCopy();
+        }
+        
+        // Fallback para o método antigo caso não encontre a função
         const getValue = (element) => element?.textContent || 'N/A';
 
         const report = [
