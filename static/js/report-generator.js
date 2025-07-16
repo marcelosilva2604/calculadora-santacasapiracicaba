@@ -549,8 +549,29 @@ function generateTextForCopy() {
         return Math.round(num * 100) / 100;
     };
     
+    const formatPatientName = (name) => {
+        if (!name || name === 'Não informado') return name;
+        
+        // Converter para minúsculas primeiro
+        let formattedName = name.toLowerCase();
+        
+        // Verificar se começa com "rn" (recém-nascido)
+        if (formattedName.startsWith('rn ')) {
+            // Capitalizar "RN" e o restante do nome
+            formattedName = 'RN ' + formattedName.substring(3);
+        }
+        
+        // Capitalizar primeira letra de cada palavra
+        formattedName = formattedName.replace(/\b\w/g, (char) => char.toUpperCase());
+        
+        // Manter preposições em minúsculas (de, da, do, dos, das)
+        formattedName = formattedName.replace(/\b(De|Da|Do|Dos|Das)\b/g, (match) => match.toLowerCase());
+        
+        return formattedName;
+    };
+    
     let text = `Dados do Paciente\n`;
-    text += `Nome: ${patientData.name}\n`;
+    text += `Nome: ${formatPatientName(patientData.name)}\n`;
     text += `Leito: ${patientData.bed} Peso: ${patientData.weight} ${patientData.weight !== 'Não informado' ? 'kg' : ''}\n`;
     text += `\n`;
     
