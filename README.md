@@ -45,7 +45,7 @@ Designed to be simple and effective for ICU staff — whether used on computers,
 ## 👨‍⚕️ About the creator
 
 Developed by [Marcelo Silva](https://www.linkedin.com/in/marcelocarvalhosilva),  
-Pediatrician & Neonatologist from Brazil with over 5 years of ICU experience.  
+Pediatrician & Neonatologist from Brazil with over 10 years of ICU experience.  
 This project was built based on real hospital needs, during daily clinical practice.
 
 ---
