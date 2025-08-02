@@ -62,10 +62,6 @@ This project shows how **clinically-aware developers** can use code to save time
 
 ---
 
-## 📸 Screenshots (optional)
+## 📸 Screenshots
 <img width="1895" height="920" alt="Screenshot 2025-08-02 at 13 50 07" src="https://github.com/user-attachments/assets/5b5bb724-353f-4b69-8ea1-d51e200b2424" />
 
-You can add screenshots here, e.g.:
-
-```md
-![UI preview](assets/screenshot.png) 
